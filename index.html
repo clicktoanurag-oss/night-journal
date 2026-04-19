@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Night Journal</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface2: #1c2128;
+      --border: #30363d;
+      --accent: #7c6af7;
+      --accent-soft: #2d2a4a;
+      --text: #e6edf3;
+      --muted: #8b949e;
+      --success: #3fb950;
+      --gold: #e3b341;
+      --rose: #f47067;
+      --teal: #39d353;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      padding: 24px 16px 60px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    header .moon { font-size: 2.4rem; }
+
+    header h1 {
+      font-size: 1.6rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      margin-top: 6px;
+    }
+
+    header .date {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-top: 4px;
+    }
+
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .card-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+
+    .card-title {
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .card-subtitle {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 1px;
+    }
+
+    /* Bullet list inputs */
+    .bullet-list { display: flex; flex-direction: column; gap: 8px; }
+
+    .bullet-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .bullet-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      margin-top: 13px;
+      flex-shrink: 0;
+    }
+
+    .bullet-row input[type="text"] {
+      flex: 1;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 0.92rem;
+      padding: 8px 12px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .bullet-row input[type="text"]:focus {
+      border-color: var(--accent);
+    }
+
+    .bullet-row input[type="text"]::placeholder { color: var(--muted); }
+
+    .add-btn {
+      background: none;
+      border: 1px dashed var(--border);
+      border-radius: 8px;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 0.85rem;
+      padding: 7px 12px;
+      text-align: left;
+      width: 100%;
+      margin-top: 4px;
+      transition: border-color 0.15s, color 0.15s;
+    }
+
+    .add-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    .remove-btn {
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 1rem;
+      padding: 4px 6px;
+      border-radius: 6px;
+      line-height: 1;
+      margin-top: 4px;
+      transition: color 0.15s;
+    }
+
+    .remove-btn:hover { color: var(--rose); }
+
+    /* Textarea */
+    textarea {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.92rem;
+      padding: 10px 12px;
+      resize: vertical;
+      outline: none;
+      min-height: 100px;
+      line-height: 1.6;
+      transition: border-color 0.15s;
+    }
+
+    textarea:focus { border-color: var(--accent); }
+    textarea::placeholder { color: var(--muted); }
+
+    /* Identity */
+    #identity-input {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 500;
+      padding: 10px 14px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    #identity-input:focus { border-color: var(--accent); }
+    #identity-input::placeholder { color: var(--muted); }
+
+    /* Actions */
+    .actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .btn-save {
+      background: var(--accent);
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 600;
+      padding: 12px 32px;
+      transition: opacity 0.15s;
+    }
+
+    .btn-save:hover { opacity: 0.85; }
+
+    .btn-clear {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 0.95rem;
+      padding: 12px 24px;
+      transition: border-color 0.15s, color 0.15s;
+    }
+
+    .btn-clear:hover { border-color: var(--rose); color: var(--rose); }
+
+    .btn-history {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 0.95rem;
+      padding: 12px 24px;
+      transition: border-color 0.15s, color 0.15s;
+    }
+
+    .btn-history:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* Toast */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--success);
+      color: #fff;
+      border-radius: 10px;
+      padding: 10px 22px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: transform 0.3s ease;
+      z-index: 100;
+      pointer-events: none;
+    }
+
+    #toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* History modal */
+    #modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    #modal-overlay.open { display: flex; }
+
+    #modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      width: 100%;
+      max-width: 680px;
+      max-height: 80vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    #modal-header h2 { font-size: 1rem; font-weight: 600; }
+
+    #modal-close {
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 1.3rem;
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+
+    #modal-close:hover { color: var(--text); }
+
+    #modal-body {
+      overflow-y: auto;
+      padding: 16px 20px;
+      flex: 1;
+    }
+
+    .history-entry {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 14px;
+      overflow: hidden;
+    }
+
+    .history-entry-header {
+      background: var(--surface2);
+      padding: 10px 14px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--accent);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .history-entry-body {
+      padding: 12px 14px;
+      font-size: 0.85rem;
+      line-height: 1.7;
+      color: var(--text);
+    }
+
+    .history-section { margin-bottom: 10px; }
+    .history-section-title { color: var(--muted); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+
+    .del-entry-btn {
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 0.8rem;
+      padding: 2px 6px;
+    }
+    .del-entry-btn:hover { color: var(--rose); }
+
+    .empty-history {
+      text-align: center;
+      color: var(--muted);
+      padding: 40px 0;
+      font-size: 0.9rem;
+    }
+
+    /* Color themes per card */
+    .icon-gold { background: rgba(227,179,65,0.15); }
+    .icon-teal { background: rgba(57,211,83,0.15); }
+    .icon-rose { background: rgba(244,112,103,0.15); }
+    .icon-blue { background: rgba(88,166,255,0.15); }
+    .icon-purple { background: rgba(124,106,247,0.15); }
+    .icon-orange { background: rgba(255,163,72,0.15); }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="moon">🌙</div>
+  <h1>Night Journal</h1>
+  <div class="date" id="header-date"></div>
+</header>
+
+<div class="container">
+
+  <!-- 1. Gratitude -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon icon-gold">🙏</div>
+      <div>
+        <div class="card-title">Gratitude</div>
+        <div class="card-subtitle">What are you thankful for today?</div>
+      </div>
+    </div>
+    <div class="bullet-list" id="gratitude-list"></div>
+    <button class="add-btn" onclick="addRow('gratitude-list', 'I am grateful for...')">+ Add</button>
+  </div>
+
+  <!-- 2. Achievements -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon icon-teal">🏆</div>
+      <div>
+        <div class="card-title">Achievements</div>
+        <div class="card-subtitle">What did you accomplish today?</div>
+      </div>
+    </div>
+    <div class="bullet-list" id="achievements-list"></div>
+    <button class="add-btn" onclick="addRow('achievements-list', 'Today I achieved...')">+ Add</button>
+  </div>
+
+  <!-- 3. Challenges & Learnings -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon icon-rose">🌱</div>
+      <div>
+        <div class="card-title">Challenges &amp; Learnings</div>
+        <div class="card-subtitle">What was hard? What did you learn?</div>
+      </div>
+    </div>
+    <div class="bullet-list" id="challenges-list"></div>
+    <button class="add-btn" onclick="addRow('challenges-list', 'I struggled with / I learned...')">+ Add</button>
+  </div>
+
+  <!-- 4. Open Points / Mind Dump -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon icon-blue">🧠</div>
+      <div>
+        <div class="card-title">Open Points</div>
+        <div class="card-subtitle">Mind dump — clear it all out before you sleep</div>
+      </div>
+    </div>
+    <textarea id="open-points" placeholder="Dump everything on your mind here — worries, ideas, loose threads, reminders..."></textarea>
+  </div>
+
+  <!-- 5. Identity -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon icon-purple">✨</div>
+      <div>
+        <div class="card-title">Who Am I?</div>
+        <div class="card-subtitle">Reaffirm your identity — who are you becoming?</div>
+      </div>
+    </div>
+    <div class="bullet-list" id="identity-list"></div>
+    <button class="add-btn" onclick="addRow('identity-list', 'I am...')">+ Add</button>
+  </div>
+
+  <!-- 6. Next Steps -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon icon-orange">🎯</div>
+      <div>
+        <div class="card-title">Next Steps</div>
+        <div class="card-subtitle">What are your top priorities for tomorrow?</div>
+      </div>
+    </div>
+    <div class="bullet-list" id="nextsteps-list"></div>
+    <button class="add-btn" onclick="addRow('nextsteps-list', 'Tomorrow I will...')">+ Add</button>
+  </div>
+
+  <div class="actions">
+    <button class="btn-save" onclick="saveEntry()">Save Entry</button>
+    <button class="btn-history" onclick="openHistory()">View History</button>
+    <button class="btn-clear" onclick="clearForm()">Clear</button>
+  </div>
+
+</div>
+
+<!-- Toast -->
+<div id="toast">Entry saved!</div>
+
+<!-- History Modal -->
+<div id="modal-overlay" onclick="closeHistoryOnOverlay(event)">
+  <div id="modal">
+    <div id="modal-header">
+      <h2>Previous Entries</h2>
+      <button id="modal-close" onclick="closeHistory()">&#x2715;</button>
+    </div>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+  // ── Config — must match Code.gs ──────────────────────────────────────────────
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwNdiF57hIEiToT6kirL5hkmArsunQQKK9XLb9mGZbuFcJHfta0EXaOlETbO-js2M0S/exec';
+  const SECRET_KEY = 'anurag2024night';
+  // ─────────────────────────────────────────────────────────────────────────────
+
+  // Set date
+  const now = new Date();
+  document.getElementById('header-date').textContent = now.toLocaleDateString('en-US', {
+    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+  });
+
+  // ── Bullet list helpers ───────────────────────────────────────────────────────
+  function addRow(listId, placeholder) {
+    const list = document.getElementById(listId);
+    const row  = document.createElement('div');
+    row.className = 'bullet-row';
+
+    const dot = document.createElement('div');
+    dot.className = 'bullet-dot';
+
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.placeholder = placeholder;
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Enter') { e.preventDefault(); addRow(listId, placeholder); }
+    });
+
+    const rm = document.createElement('button');
+    rm.className = 'remove-btn';
+    rm.textContent = '×';
+    rm.title = 'Remove';
+    rm.onclick = () => { if (list.children.length > 1) row.remove(); else input.value = ''; };
+
+    row.appendChild(dot);
+    row.appendChild(input);
+    row.appendChild(rm);
+    list.appendChild(row);
+    input.focus();
+  }
+
+  function getListValues(listId) {
+    return Array.from(document.getElementById(listId).querySelectorAll('input'))
+      .map(i => i.value.trim()).filter(Boolean);
+  }
+
+  function setListValues(listId, placeholder, values) {
+    const list = document.getElementById(listId);
+    list.innerHTML = '';
+    (values.length ? values : ['']).forEach(v => {
+      addRow(listId, placeholder);
+      const inputs = list.querySelectorAll('input');
+      inputs[inputs.length - 1].value = v;
+    });
+  }
+
+  // Initialise lists with one empty row each
+  ['gratitude-list','achievements-list','challenges-list','identity-list','nextsteps-list'].forEach(id => {
+    const ph = {
+      'gratitude-list':    'I am grateful for...',
+      'achievements-list': 'Today I achieved...',
+      'challenges-list':   'I struggled with / I learned...',
+      'identity-list':     'I am...',
+      'nextsteps-list':    'Tomorrow I will...',
+    }[id];
+    addRow(id, ph);
+  });
+
+  // ── Google Sheets API helpers ─────────────────────────────────────────────────
+  function callScript(payload) {
+    return fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify({ ...payload, key: SECRET_KEY }),
+    }).then(r => r.json());
+  }
+
+  // ── Save ──────────────────────────────────────────────────────────────────────
+  async function saveEntry() {
+    const entry = {
+      date:         now.toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' }),
+      gratitude:    getListValues('gratitude-list'),
+      achievements: getListValues('achievements-list'),
+      challenges:   getListValues('challenges-list'),
+      open_points:  document.getElementById('open-points').value.trim(),
+      identity:     getListValues('identity-list'),
+      next_steps:   getListValues('nextsteps-list'),
+    };
+
+    const isEmpty = !entry.gratitude.length && !entry.achievements.length &&
+      !entry.challenges.length && !entry.open_points && !entry.identity.length && !entry.next_steps.length;
+    if (isEmpty) { showToast('Nothing to save yet!', '#e3b341'); return; }
+
+    const btn = document.querySelector('.btn-save');
+    btn.textContent = 'Saving…';
+    btn.disabled = true;
+
+    try {
+      await callScript(entry);
+      showToast('Entry saved! Sleep well 🌙');
+      clearForm(true);
+    } catch {
+      showToast('Save failed — check connection', '#f47067');
+    } finally {
+      btn.textContent = 'Save Entry';
+      btn.disabled = false;
+    }
+  }
+
+  // ── Toast ─────────────────────────────────────────────────────────────────────
+  function showToast(msg, color) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.style.background = color || 'var(--success)';
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2800);
+  }
+
+  // ── Clear ─────────────────────────────────────────────────────────────────────
+  function clearForm(silent) {
+    if (!silent && !confirm('Clear all fields?')) return;
+    setListValues('gratitude-list',    'I am grateful for...', []);
+    setListValues('achievements-list', 'Today I achieved...', []);
+    setListValues('challenges-list',   'I struggled with / I learned...', []);
+    setListValues('identity-list',     'I am...', []);
+    setListValues('nextsteps-list',    'Tomorrow I will...', []);
+    document.getElementById('open-points').value = '';
+  }
+
+  // ── History ───────────────────────────────────────────────────────────────────
+  async function openHistory() {
+    const body = document.getElementById('modal-body');
+    body.innerHTML = '<div class="empty-history">Loading from Google Sheets…</div>';
+    document.getElementById('modal-overlay').classList.add('open');
+
+    let entries;
+    try {
+      entries = await fetch(`${SCRIPT_URL}?key=${encodeURIComponent(SECRET_KEY)}`).then(r => r.json());
+    } catch {
+      body.innerHTML = '<div class="empty-history">Could not load — check your connection.</div>';
+      return;
+    }
+
+    body.innerHTML = '';
+    if (!entries.length) {
+      body.innerHTML = '<div class="empty-history">No entries yet. Save your first night journal!</div>';
+      return;
+    }
+
+    entries.forEach(e => {
+      const div = document.createElement('div');
+      div.className = 'history-entry';
+
+      const sections = [
+        { title: 'Gratitude',              val: e.gratitude },
+        { title: 'Achievements',           val: e.achievements },
+        { title: 'Challenges & Learnings', val: e.challenges },
+        { title: 'Open Points',            val: e.open_points ? [e.open_points] : [] },
+        { title: 'Identity',               val: e.identity   || [] },
+        { title: 'Next Steps',             val: e.next_steps },
+      ];
+
+      const bodyHTML = sections.map(s => {
+        if (!s.val || !s.val.length) return '';
+        const items = s.val.map(v => `<div>• ${escHtml(v)}</div>`).join('');
+        return `<div class="history-section"><div class="history-section-title">${s.title}</div>${items}</div>`;
+      }).join('');
+
+      const savedAt = e.saved_at
+        ? new Date(e.saved_at).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+        : '';
+
+      div.innerHTML = `
+        <div class="history-entry-header">
+          <span>${escHtml(e.date)}${savedAt ? ' · ' + savedAt : ''}</span>
+          <button class="del-entry-btn" onclick="deleteEntry('${e.id}')">Delete</button>
+        </div>
+        <div class="history-entry-body">${bodyHTML || '<em style="color:var(--muted)">Empty entry</em>'}</div>
+      `;
+      body.appendChild(div);
+    });
+  }
+
+  async function deleteEntry(id) {
+    if (!confirm('Delete this entry?')) return;
+    try {
+      await callScript({ action: 'delete', id });
+      openHistory();
+    } catch {
+      showToast('Could not delete entry', '#f47067');
+    }
+  }
+
+  function closeHistory() { document.getElementById('modal-overlay').classList.remove('open'); }
+  function closeHistoryOnOverlay(e) { if (e.target === document.getElementById('modal-overlay')) closeHistory(); }
+
+  function escHtml(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+</script>
+</body>
+</html>

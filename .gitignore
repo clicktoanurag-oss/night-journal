@@ -1,0 +1,4 @@
+node_modules/
+journal.json
+journal.db
+*.log
