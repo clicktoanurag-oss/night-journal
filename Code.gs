@@ -36,9 +36,45 @@ function doGet(e) {
   return respond(entries);
 }
 
+function getMorningSheet() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let sheet = ss.getSheetByName('morning');
+  if (!sheet) {
+    sheet = ss.insertSheet('morning');
+    sheet.appendRow([
+      'date','bodyScore','workoutLocked','workout','discard','foodNot',
+      'mask','law','coldReadPerson','coldReadHypothesis','positioningMove',
+      'kaizen','stake','completedAt'
+    ]);
+  }
+  return sheet;
+}
+
 function doPost(e) {
   const payload = JSON.parse(e.postData.contents);
   if (payload.key !== SECRET_KEY) return deny();
+
+  // ── Morning Entry ────────────────────────────────────────────────
+  if (payload.tab === 'morning') {
+    const sheet = getMorningSheet();
+    sheet.appendRow([
+      payload.date              || '',
+      payload.bodyScore         || '',
+      payload.workoutLocked     || false,
+      payload.workout           || '',
+      payload.discard           || '',
+      payload.foodNot           || '',
+      payload.mask              || '',
+      payload.law               || '',
+      payload.coldReadPerson    || '',
+      payload.coldReadHypothesis|| '',
+      payload.positioningMove   || '',
+      payload.kaizen            || '',
+      payload.stake             || '',
+      payload.completedAt       || '',
+    ]);
+    return respond({ ok: true });
+  }
 
   const sheet = getSheet();
 
