@@ -524,12 +524,6 @@ function beginEntry(){
   buildQS();
   QS_DIMS.forEach(d=>{document.getElementById('qr-'+d).classList.remove('done')});
   document.getElementById('s1-adv').style.opacity='.3';
-  document.getElementById('disc-inp').value='';
-  document.getElementById('disc-inp').style.opacity='1';
-  document.getElementById('disc-anim').classList.remove('falling');
-  document.getElementById('disc-anim').style.opacity='0';
-  document.getElementById('food-s').classList.remove('on');
-  document.getElementById('food-inp').value='';
   document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
   document.querySelectorAll('.cc').forEach(c=>c.classList.remove('on'));
   document.querySelectorAll('.lc').forEach(c=>c.classList.remove('on'));
@@ -572,20 +566,6 @@ function pickLens(key,name){
 
 function advance(from){
   vib(28);
-  if(from===2){
-    const fs=document.getElementById('food-s');
-    if(!fs.classList.contains('on')){
-      const val=document.getElementById('disc-inp').value.trim();
-      discardVal=val;
-      if(val){
-        const inp=document.getElementById('disc-inp'),anim=document.getElementById('disc-anim');
-        anim.textContent=val;anim.style.opacity='1';anim.style.animation='none';inp.style.opacity='0';
-        requestAnimationFrame(()=>requestAnimationFrame(()=>{anim.classList.add('falling');vib([25,15,25])}));
-        setTimeout(()=>{anim.classList.remove('falling');anim.style.opacity='0';inp.value='';inp.style.opacity='1';fs.classList.add('on');setTimeout(()=>document.getElementById('food-inp').focus(),500)},830);
-      }else{fs.classList.add('on');setTimeout(()=>document.getElementById('food-inp').focus(),200)}
-      return;
-    }
-  }
   const next=['','s2','s3','s4','s5'][from];
   if(next)show(next);
 }
@@ -595,8 +575,7 @@ async function sealEntry(){
   const entry={
     date:today(),
     presence:qsScores.presence,energy:qsScores.energy,fear:qsScores.fear,shen:qsScores.shen,
-    block:block.join(', ')||'',discard:discardVal||document.getElementById('disc-inp').value.trim(),
-    foodNot:document.getElementById('food-inp').value.trim(),
+    block:block.join(', ')||'',discard:'',foodNot:'',
     character:character||'',lens:lens||'',lensKey:lensKey||'',
     positioningMove:'',coldReadPerson:'',coldReadHypothesis:'',
     kaizen:document.getElementById('kai-inp').value.trim(),
