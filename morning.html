@@ -328,17 +328,6 @@ input[type=text]::placeholder{color:var(--mt)}
         <div class="lc-sub">All lenses, ranked by urgency</div>
       </div>
     </div>
-    <div class="fg">
-      <div class="ml">Cold read — one person, what do they want that they're not saying?</div>
-      <div class="two-inp">
-        <input type="text" id="cr-person" placeholder="Person"/>
-        <input type="text" id="cr-hyp" placeholder="Hypothesis"/>
-      </div>
-    </div>
-    <div class="fg">
-      <div class="ml">Positioning move — one thing today that can't be attributed to someone else.</div>
-      <input type="text" id="pos-inp" placeholder="Your visibility play"/>
-    </div>
   </div>
   <button class="adv" onclick="advance(4)">→</button>
 </div>
@@ -543,7 +532,7 @@ function beginEntry(){
   document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
   document.querySelectorAll('.cc').forEach(c=>c.classList.remove('on'));
   document.querySelectorAll('.lc').forEach(c=>c.classList.remove('on'));
-  ['cr-person','cr-hyp','pos-inp','kai-inp','stk-inp'].forEach(id=>document.getElementById(id).value='');
+  ['kai-inp','stk-inp'].forEach(id=>document.getElementById(id).value='');
   startGap();
 }
 
@@ -608,9 +597,7 @@ async function sealEntry(){
     block:block||'',discard:discardVal||document.getElementById('disc-inp').value.trim(),
     foodNot:document.getElementById('food-inp').value.trim(),
     character:character||'',lens:lens||'',lensKey:lensKey||'',
-    coldReadPerson:document.getElementById('cr-person').value.trim(),
-    coldReadHypothesis:document.getElementById('cr-hyp').value.trim(),
-    positioningMove:document.getElementById('pos-inp').value.trim(),
+    positioningMove:'',coldReadPerson:'',coldReadHypothesis:'',
     kaizen:document.getElementById('kai-inp').value.trim(),
     stake:document.getElementById('stk-inp').value.trim(),
     completedAt:new Date().toISOString(),
