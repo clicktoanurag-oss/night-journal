@@ -1,675 +1,413 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-  <title>The Entry</title>
-  <style>
-    /* ── Variables ─────────────────────────────────────────────────── */
-    :root {
-      --bg: #0a0a0a;
-      --green: #00ff41;
-      --green-dim: rgba(0,255,65,0.12);
-      --green-glow: 0 0 12px rgba(0,255,65,0.4);
-      --muted: #2a2a2a;
-      --muted-text: #505050;
-      --text: #cccccc;
-      --font: 'Courier New', Courier, monospace;
-      --tr: 300ms ease;
-    }
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
+<title>The Entry</title>
+<style>
+:root{--bg:#0a0a0a;--g:#00ff41;--gd:rgba(0,255,65,0.12);--gg:0 0 12px rgba(0,255,65,0.4);--m:#2a2a2a;--mt:#484848;--t:#cccccc;--f:'Courier New',monospace;--tr:280ms ease}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--bg);color:var(--t);font-family:var(--f);height:100%;overflow:hidden}
+.screen{position:fixed;inset:0;opacity:0;pointer-events:none;transition:opacity var(--tr);overflow-y:auto;-webkit-overflow-scrolling:touch}
+.screen.active{opacity:1;pointer-events:all}
+.si{display:flex;flex-direction:column;justify-content:center;padding:48px 28px 80px;max-width:480px;margin:0 auto;width:100%;min-height:100vh}
 
-    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+/* progress */
+#pb-w{position:fixed;top:0;left:0;right:0;height:2px;background:var(--m);z-index:100;opacity:0;transition:opacity var(--tr)}
+#pb-w.on{opacity:1}
+#pb{height:100%;background:var(--g);box-shadow:var(--gg);transition:width 350ms ease}
 
-    html, body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: var(--font);
-      height: 100%;
-      overflow: hidden;
-    }
+/* type */
+.lbl{font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--g);opacity:.7;margin-bottom:16px}
+.prompt{font-size:1.5rem;font-weight:bold;color:#fff;line-height:1.35;margin-bottom:28px}
+.ml{font-size:.65rem;color:var(--mt);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px}
+input[type=text]{background:transparent;border:none;border-bottom:1px solid var(--m);color:#fff;font-family:var(--f);font-size:.95rem;padding:10px 0;width:100%;outline:none;transition:border-color var(--tr);-webkit-appearance:none;border-radius:0}
+input[type=text]:focus{border-bottom-color:var(--g)}
+input[type=text]::placeholder{color:var(--mt)}
 
-    /* ── Screen system ─────────────────────────────────────────────── */
-    .screen {
-      position: fixed;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity var(--tr);
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-    }
-    .screen.active { opacity: 1; pointer-events: all; }
+/* advance btn */
+.adv{position:fixed;bottom:24px;right:24px;background:transparent;border:1px solid var(--g);color:var(--g);font-family:var(--f);font-size:1.3rem;width:52px;height:52px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background var(--tr),box-shadow var(--tr);z-index:50}
+.adv:active{background:var(--gd);box-shadow:var(--gg)}
 
-    /* ── Progress bar ──────────────────────────────────────────────── */
-    #pb-wrap {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      height: 2px;
-      background: var(--muted);
-      z-index: 100;
-      opacity: 0;
-      transition: opacity var(--tr);
-    }
-    #pb-wrap.on { opacity: 1; }
-    #pb { height: 100%; background: var(--green); box-shadow: var(--green-glow); transition: width 400ms ease; }
+/* HOME */
+.h-title{font-size:2.2rem;font-weight:bold;color:var(--g);text-shadow:var(--gg);letter-spacing:.06em;margin-bottom:6px}
+.h-streak{font-size:.88rem;color:var(--mt);margin-bottom:40px}
+.h-streak span{color:var(--g)}
+.h-done{color:var(--g);font-size:.82rem;margin-bottom:16px;opacity:.75}
+.hbtn{display:block;background:transparent;border:1px solid var(--g);color:var(--g);font-family:var(--f);font-size:.9rem;letter-spacing:.18em;padding:14px 36px;cursor:pointer;text-transform:uppercase;transition:background var(--tr),box-shadow var(--tr);width:fit-content}
+.hbtn:active{background:var(--gd);box-shadow:var(--gg)}
+.hbtn.sec{border-color:var(--m);color:var(--mt);font-size:.75rem;padding:10px 22px;margin-top:10px}
+.h-links{position:fixed;bottom:24px;left:24px;display:flex;gap:20px}
+.hlink{background:none;border:none;color:var(--mt);font-family:var(--f);font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;padding:8px 0}
 
-    /* ── Screen inner ──────────────────────────────────────────────── */
-    .si {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding: 52px 28px 88px;
-      max-width: 480px;
-      margin: 0 auto;
-      width: 100%;
-      min-height: 100vh;
-    }
+/* GAP */
+#gap-q{font-size:1.4rem;color:#fff;text-align:center;padding:0 32px;opacity:0;transition:opacity 1.5s ease;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:100%;line-height:1.6}
+#gap-q.on{opacity:1}
+#gap-t{position:fixed;bottom:22px;right:22px;font-size:.58rem;color:var(--mt);letter-spacing:.1em}
 
-    /* ── Typography ────────────────────────────────────────────────── */
-    .s-label {
-      font-size: 0.65rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--green);
-      opacity: 0.75;
-      margin-bottom: 20px;
-    }
-    .s-prompt {
-      font-size: 1.55rem;
-      font-weight: bold;
-      color: #fff;
-      line-height: 1.3;
-      margin-bottom: 32px;
-    }
-    .ml {
-      font-size: 0.68rem;
-      color: var(--muted-text);
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      margin-bottom: 10px;
-    }
+/* QUICK STATE */
+.qs-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid #111;transition:opacity var(--tr)}
+.qs-row.done{opacity:.35}
+.qs-name{font-size:.82rem;color:var(--t);width:80px;flex-shrink:0}
+.qs-btns{display:flex;gap:5px}
+.qs-btn{background:transparent;border:1px solid var(--m);color:var(--mt);font-family:var(--f);font-size:.8rem;width:38px;height:38px;cursor:pointer;transition:all var(--tr);display:flex;align-items:center;justify-content:center}
+.qs-btn.on{border-color:var(--g);color:var(--g);background:var(--gd)}
 
-    /* ── Text inputs ───────────────────────────────────────────────── */
-    input[type="text"] {
-      background: transparent;
-      border: none;
-      border-bottom: 1px solid var(--muted);
-      color: #fff;
-      font-family: var(--font);
-      font-size: 0.98rem;
-      padding: 10px 0;
-      width: 100%;
-      outline: none;
-      transition: border-color var(--tr);
-      -webkit-appearance: none;
-      border-radius: 0;
-    }
-    input[type="text"]:focus { border-bottom-color: var(--green); }
-    input[type="text"]::placeholder { color: var(--muted-text); }
+/* BLOCK CHIPS */
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:24px}
+.chip{background:transparent;border:1px solid var(--m);color:var(--mt);font-family:var(--f);font-size:.7rem;padding:7px 11px;cursor:pointer;transition:all var(--tr);line-height:1.3}
+.chip span{display:block;font-size:.55rem;color:var(--mt);margin-top:2px;letter-spacing:.05em}
+.chip.on{border-color:var(--g);color:var(--g);background:var(--gd)}
+.chip.on span{color:rgba(0,255,65,.5)}
 
-    /* ── Advance button ────────────────────────────────────────────── */
-    .adv {
-      position: fixed;
-      bottom: 24px; right: 24px;
-      background: transparent;
-      border: 1px solid var(--green);
-      color: var(--green);
-      font-family: var(--font);
-      font-size: 1.3rem;
-      width: 52px; height: 52px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      transition: background var(--tr), box-shadow var(--tr);
-      z-index: 50;
-      user-select: none;
-    }
-    .adv:active { background: var(--green-dim); box-shadow: var(--green-glow); }
+/* DISCARD */
+.disc-wrap{position:relative;margin-bottom:28px}
+#disc-anim{position:absolute;top:0;left:0;right:0;font-size:.95rem;color:var(--g);pointer-events:none;opacity:0}
+@keyframes fall{0%{transform:translateY(0) scale(1);opacity:1;filter:blur(0)}100%{transform:translateY(70px) scale(.88);opacity:0;filter:blur(5px)}}
+.falling{animation:fall 800ms ease-in forwards}
+#food-s{opacity:0;transition:opacity 500ms ease;pointer-events:none}
+#food-s.on{opacity:1;pointer-events:all}
 
-    /* ══════════════════════════════════
-       HOME
-    ══════════════════════════════════ */
-    #sh .si { justify-content: center; }
-    .home-title {
-      font-size: 2.2rem;
-      font-weight: bold;
-      color: var(--green);
-      text-shadow: var(--green-glow);
-      letter-spacing: 0.06em;
-      margin-bottom: 6px;
-    }
-    .home-streak { font-size: 0.9rem; color: var(--muted-text); margin-bottom: 44px; }
-    .home-streak span { color: var(--green); }
-    .home-complete { color: var(--green); font-size: 0.85rem; margin-bottom: 18px; opacity: 0.75; }
-    .hbtn {
-      display: block;
-      background: transparent;
-      border: 1px solid var(--green);
-      color: var(--green);
-      font-family: var(--font);
-      font-size: 0.92rem;
-      letter-spacing: 0.18em;
-      padding: 14px 36px;
-      cursor: pointer;
-      text-transform: uppercase;
-      transition: background var(--tr), box-shadow var(--tr);
-      width: fit-content;
-    }
-    .hbtn:active { background: var(--green-dim); box-shadow: var(--green-glow); }
-    .hbtn.sec {
-      border-color: var(--muted);
-      color: var(--muted-text);
-      font-size: 0.78rem;
-      padding: 11px 24px;
-      margin-top: 12px;
-    }
-    .home-links {
-      position: fixed;
-      bottom: 24px; left: 24px;
-      display: flex; gap: 20px;
-    }
-    .hlink {
-      background: none; border: none;
-      color: var(--muted-text); font-family: var(--font);
-      font-size: 0.68rem; letter-spacing: 0.12em;
-      text-transform: uppercase; cursor: pointer;
-      padding: 8px 0; transition: color var(--tr);
-    }
-    .hlink:hover { color: var(--green); }
+/* CHARACTERS */
+.char-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.cc{border:1px solid var(--m);padding:13px 11px;cursor:pointer;transition:all var(--tr);background:transparent;text-align:left}
+.cc:active{background:var(--gd)}
+.cc.on{border-color:var(--g);background:var(--gd);box-shadow:inset 0 0 0 1px var(--g)}
+.cc-obj{font-size:.55rem;color:var(--g);opacity:.6;margin-bottom:3px;text-transform:uppercase;letter-spacing:.04em}
+.cc-name{font-size:.88rem;font-weight:bold;color:#fff;margin-bottom:3px}
+.cc-sub{font-size:.63rem;color:var(--mt);line-height:1.4}
 
-    /* ══════════════════════════════════
-       SCREEN 0 — GAP
-    ══════════════════════════════════ */
-    #s0 { cursor: default; }
-    #gap-q {
-      font-size: 1.45rem;
-      color: #fff;
-      text-align: center;
-      padding: 0 36px;
-      opacity: 0;
-      transition: opacity 1.5s ease;
-      line-height: 1.6;
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 100%;
-    }
-    #gap-q.on { opacity: 1; }
-    #gap-t {
-      position: fixed;
-      bottom: 22px; right: 22px;
-      font-size: 0.6rem;
-      color: var(--muted-text);
-      letter-spacing: 0.1em;
-    }
+/* LENS */
+.lens-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:24px}
+.lc{border:1px solid var(--m);padding:11px 10px;cursor:pointer;transition:all var(--tr);background:transparent;text-align:left}
+.lc:active{background:var(--gd)}
+.lc.on{border-color:var(--g);background:var(--gd);box-shadow:inset 0 0 0 1px var(--g)}
+.lc-key{font-size:.65rem;color:var(--g);opacity:.7;margin-bottom:2px;letter-spacing:.08em}
+.lc-name{font-size:.78rem;color:#fff;font-weight:bold;margin-bottom:2px}
+.lc-sub{font-size:.6rem;color:var(--mt);line-height:1.3}
+.fg{margin-bottom:22px}
+.two-inp{display:flex;flex-direction:column;gap:10px}
 
-    /* ══════════════════════════════════
-       SCREEN 1 — BODY
-    ══════════════════════════════════ */
-    .slider-num {
-      font-size: 3.2rem;
-      font-weight: bold;
-      color: var(--green);
-      text-shadow: var(--green-glow);
-      text-align: center;
-      margin-bottom: 14px;
-      line-height: 1;
-    }
-    input[type="range"] {
-      -webkit-appearance: none;
-      width: 100%;
-      height: 2px;
-      background: var(--muted);
-      outline: none;
-      cursor: pointer;
-      margin-bottom: 32px;
-    }
-    input[type="range"]::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 30px; height: 30px;
-      border-radius: 50%;
-      background: var(--green);
-      box-shadow: var(--green-glow);
-      cursor: pointer;
-    }
-    input[type="range"]::-moz-range-thumb {
-      width: 30px; height: 30px;
-      border-radius: 50%;
-      background: var(--green);
-      box-shadow: var(--green-glow);
-      border: none; cursor: pointer;
-    }
-    .tog-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-    .tog-lbl { font-size: 0.85rem; color: var(--text); }
-    .tog-btns { display: flex; gap: 8px; }
-    .tog-btn {
-      background: transparent;
-      border: 1px solid var(--muted);
-      color: var(--muted-text); font-family: var(--font);
-      font-size: 0.78rem; padding: 8px 14px; cursor: pointer;
-      transition: all var(--tr); letter-spacing: 0.05em;
-    }
-    .tog-btn.on { border-color: var(--green); color: var(--green); background: var(--green-dim); }
-    .workout-wrap { overflow: hidden; max-height: 0; transition: max-height 400ms ease; }
-    .workout-wrap.open { max-height: 70px; }
+/* SEAL */
+#s6{cursor:pointer}
+#s6 .si{align-items:center;text-align:center}
+.seal-day{font-size:3.8rem;font-weight:bold;color:var(--g);text-shadow:0 0 24px rgba(0,255,65,.6),0 0 48px rgba(0,255,65,.3);line-height:1;margin-bottom:12px}
+.seal-char{font-size:.85rem;color:var(--mt);margin-bottom:20px;letter-spacing:.08em}
+.seal-q{font-size:.75rem;color:var(--mt);max-width:260px;line-height:1.7;margin-bottom:20px}
+.seal-go{font-size:1.2rem;color:#fff;opacity:0;transition:opacity 1.5s ease;letter-spacing:.12em}
+.seal-go.on{opacity:1}
 
-    /* ══════════════════════════════════
-       SCREEN 2 — THE BLOCK
-    ══════════════════════════════════ */
+/* WEEKLY */
+#sw .si{justify-content:flex-start;padding-top:52px}
+.w-back{background:none;border:none;color:var(--mt);font-family:var(--f);font-size:.7rem;letter-spacing:.1em;cursor:pointer;padding:0 0 22px;text-align:left;text-transform:uppercase}
+.w-sec{margin-bottom:26px}
+.w-ttl{font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--g);margin-bottom:10px;opacity:.8}
+.bars{display:flex;align-items:flex-end;gap:5px;height:55px}
+.bc{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1}
+.bar{width:100%;background:var(--g);min-height:2px;opacity:.75}
+.bl{font-size:.5rem;color:var(--mt)}
+.w-stat{font-size:.8rem;color:var(--t);margin-bottom:6px}
+.w-stat span{color:var(--g)}
+.w-list{list-style:none;padding:0}
+.w-list li{font-size:.76rem;color:var(--mt);padding:5px 0;border-bottom:1px solid #111;line-height:1.4}
+.w-list li strong{color:var(--t)}
 
-    /* Chakra block chips */
-    .block-chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 28px;
-    }
-    .block-chip {
-      background: transparent;
-      border: 1px solid var(--muted);
-      color: var(--muted-text);
-      font-family: var(--font);
-      font-size: 0.72rem;
-      padding: 7px 13px;
-      cursor: pointer;
-      transition: all var(--tr);
-      letter-spacing: 0.04em;
-      white-space: nowrap;
-    }
-    .block-chip:active { background: var(--green-dim); }
-    .block-chip.on {
-      border-color: var(--green);
-      color: var(--green);
-      background: var(--green-dim);
-    }
-    .block-chakra {
-      font-size: 0.58rem;
-      color: var(--muted-text);
-      display: block;
-      margin-top: 2px;
-      letter-spacing: 0.06em;
-    }
-    .block-chip.on .block-chakra { color: rgba(0,255,65,0.5); }
+/* EVENING */
+#se .si{justify-content:flex-start;padding-top:52px}
+.ev-row{display:flex;align-items:center;justify-content:space-between;padding:15px 0;border-bottom:1px solid #111}
+.ev-lbl{font-size:.83rem;color:var(--t);flex:1;padding-right:14px;line-height:1.4}
+.yn{display:flex;gap:5px}
+.yn-btn{background:transparent;border:1px solid var(--m);color:var(--mt);font-family:var(--f);font-size:.7rem;padding:7px 10px;cursor:pointer;transition:all var(--tr)}
+.yn-btn.y{border-color:var(--g);color:var(--g);background:var(--gd)}
+.yn-btn.n{border-color:#ff4040;color:#ff4040;background:rgba(255,64,64,.1)}
+#crw-wrap{overflow:hidden;max-height:0;transition:max-height 350ms ease}
+#crw-wrap.open{max-height:70px;padding-top:10px}
+.ev-sub{width:100%;background:transparent;border:1px solid var(--g);color:var(--g);font-family:var(--f);font-size:.85rem;letter-spacing:.15em;padding:14px;margin-top:24px;cursor:pointer;text-transform:uppercase;transition:all var(--tr)}
+.ev-sub:active{background:var(--gd);box-shadow:var(--gg)}
 
-    .discard-wrap { position: relative; margin-bottom: 36px; }
-    #disc-anim {
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      font-size: 0.98rem;
-      color: var(--green);
-      pointer-events: none;
-      opacity: 0;
-    }
-    @keyframes discFall {
-      0%   { transform: translateY(0)   scale(1);    opacity: 1; filter: blur(0); }
-      40%  { transform: translateY(10px) scale(0.97); opacity: 0.7; filter: blur(1px); }
-      100% { transform: translateY(70px) scale(0.88); opacity: 0; filter: blur(5px); }
-    }
-    .falling { animation: discFall 850ms ease-in forwards; }
-    #food-sec { opacity: 0; transition: opacity 600ms ease; pointer-events: none; }
-    #food-sec.on { opacity: 1; pointer-events: all; }
+/* overlay */
+#ov{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:999;opacity:0;pointer-events:none;transition:opacity 450ms ease}
+#ov.on{opacity:1;pointer-events:all}
+.ov-check{font-size:4rem;color:var(--g);text-shadow:var(--gg)}
 
-    /* ══════════════════════════════════
-       SCREEN 3 — THE CHARACTER
-    ══════════════════════════════════ */
-    .char-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 8px; }
-    .char-card {
-      border: 1px solid var(--muted);
-      padding: 14px 12px;
-      cursor: pointer;
-      transition: all var(--tr);
-      background: transparent;
-      text-align: left;
-    }
-    .char-card:active { background: var(--green-dim); }
-    .char-card.on { border-color: var(--green); background: var(--green-dim); box-shadow: inset 0 0 0 1px var(--green); }
-    .char-name { font-size: 0.88rem; font-weight: bold; color: #fff; margin-bottom: 4px; }
-    .char-obj  { font-size: 0.58rem; color: var(--green); opacity: 0.6; margin-bottom: 4px; letter-spacing: 0.04em; text-transform: uppercase; }
-    .char-sub  { font-size: 0.65rem; color: var(--muted-text); line-height: 1.4; }
-
-    /* ══════════════════════════════════
-       SCREEN 4 — THE OBJECTIVE
-    ══════════════════════════════════ */
-    .obj-box {
-      border-left: 2px solid var(--green);
-      padding: 12px 14px;
-      margin-bottom: 28px;
-      cursor: pointer;
-      user-select: none;
-      transition: border-color var(--tr);
-    }
-    .obj-box:active { border-color: #fff; }
-    .obj-num   { font-size: 0.58rem; color: var(--green); opacity: 0.7; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 4px; }
-    .obj-name  { font-size: 1rem; font-weight: bold; color: #fff; line-height: 1.3; margin-bottom: 4px; }
-    .obj-chars { font-size: 0.65rem; color: var(--muted-text); }
-    .obj-hint  { font-size: 0.6rem; color: var(--muted-text); margin-top: 8px; letter-spacing: 0.08em; }
-    .fg { margin-bottom: 26px; }
-    .two-inp { display: flex; flex-direction: column; gap: 12px; }
-
-    /* ══════════════════════════════════
-       SCREEN 6 — SEAL
-    ══════════════════════════════════ */
-    #s6 { cursor: pointer; }
-    #s6 .si { align-items: center; text-align: center; }
-    .seal-day {
-      font-size: 4rem; font-weight: bold; color: var(--green);
-      text-shadow: 0 0 24px rgba(0,255,65,0.6), 0 0 50px rgba(0,255,65,0.3);
-      line-height: 1; margin-bottom: 18px;
-    }
-    .seal-q { font-size: 0.8rem; color: var(--muted-text); max-width: 260px; line-height: 1.65; margin-bottom: 24px; }
-    .seal-go { font-size: 1.2rem; color: #fff; opacity: 0; transition: opacity 1.5s ease; letter-spacing: 0.12em; }
-    .seal-go.on { opacity: 1; }
-
-    /* ══════════════════════════════════
-       WEEKLY VIEW
-    ══════════════════════════════════ */
-    #sw .si { justify-content: flex-start; padding-top: 56px; }
-    .w-back {
-      background: none; border: none; color: var(--muted-text);
-      font-family: var(--font); font-size: 0.72rem;
-      letter-spacing: 0.1em; cursor: pointer;
-      padding: 0 0 24px; text-align: left; text-transform: uppercase;
-    }
-    .w-sec { margin-bottom: 30px; }
-    .w-sec-title { font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--green); margin-bottom: 12px; opacity: 0.8; }
-    .bars { display: flex; align-items: flex-end; gap: 6px; height: 60px; }
-    .bar-col { display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1; }
-    .bar { width: 100%; background: var(--green); min-height: 2px; opacity: 0.75; }
-    .bar-lbl { font-size: 0.52rem; color: var(--muted-text); letter-spacing: 0.04em; }
-    .w-stat { font-size: 0.82rem; color: var(--text); margin-bottom: 7px; }
-    .w-stat span { color: var(--green); }
-    .w-list { list-style: none; padding: 0; }
-    .w-list li { font-size: 0.78rem; color: var(--muted-text); padding: 6px 0; border-bottom: 1px solid #111; line-height: 1.45; }
-    .w-list li strong { color: var(--text); }
-
-    /* ══════════════════════════════════
-       EVENING CLOSE
-    ══════════════════════════════════ */
-    #se .si { justify-content: flex-start; padding-top: 56px; }
-    .ev-row { display: flex; align-items: center; justify-content: space-between; padding: 17px 0; border-bottom: 1px solid #111; }
-    .ev-lbl { font-size: 0.85rem; color: var(--text); flex: 1; padding-right: 16px; line-height: 1.4; }
-    .yn { display: flex; gap: 6px; flex-shrink: 0; }
-    .yn-btn {
-      background: transparent; border: 1px solid var(--muted);
-      color: var(--muted-text); font-family: var(--font);
-      font-size: 0.72rem; padding: 7px 11px; cursor: pointer;
-      transition: all var(--tr); letter-spacing: 0.05em;
-    }
-    .yn-btn.y { border-color: var(--green); color: var(--green); background: var(--green-dim); }
-    .yn-btn.n { border-color: #ff4040; color: #ff4040; background: rgba(255,64,64,0.1); }
-    #cr-wrong-wrap { overflow: hidden; max-height: 0; transition: max-height 400ms ease; }
-    #cr-wrong-wrap.open { max-height: 70px; padding-top: 10px; }
-    .ev-submit {
-      width: 100%; background: transparent;
-      border: 1px solid var(--green); color: var(--green);
-      font-family: var(--font); font-size: 0.88rem;
-      letter-spacing: 0.18em; padding: 15px;
-      margin-top: 28px; cursor: pointer; text-transform: uppercase;
-      transition: all var(--tr);
-    }
-    .ev-submit:active { background: var(--green-dim); box-shadow: var(--green-glow); }
-
-    /* ══════════════════════════════════
-       SEAL OVERLAY (evening)
-    ══════════════════════════════════ */
-    #seal-ov {
-      position: fixed; inset: 0; background: var(--bg);
-      display: flex; align-items: center; justify-content: center;
-      z-index: 999; opacity: 0; pointer-events: none; transition: opacity 500ms ease;
-    }
-    #seal-ov.on { opacity: 1; pointer-events: all; }
-    .seal-ov-check { font-size: 4rem; color: var(--green); text-shadow: var(--green-glow); }
-
-    /* Scrollbar */
-    ::-webkit-scrollbar { width: 2px; }
-    ::-webkit-scrollbar-thumb { background: var(--muted); }
-  </style>
+::-webkit-scrollbar{width:2px}
+::-webkit-scrollbar-thumb{background:var(--m)}
+</style>
 </head>
 <body>
 
-<!-- Progress bar -->
-<div id="pb-wrap"><div id="pb" style="width:0%"></div></div>
+<div id="pb-w"><div id="pb" style="width:0%"></div></div>
 
-<!-- ══════════════════════════════════════════════════════════
-     HOME
-══════════════════════════════════════════════════════════ -->
+<!-- HOME -->
 <div id="sh" class="screen active">
   <div class="si">
-    <div class="home-title">THE ENTRY</div>
-    <div class="home-streak">Day <span id="h-streak">1</span></div>
-    <div id="h-done" class="home-complete" style="display:none">/ entry complete</div>
+    <div class="h-title">THE ENTRY</div>
+    <div class="h-streak">Day <span id="h-streak">1</span></div>
+    <div id="h-done" class="h-done" style="display:none">/ entry complete</div>
     <button class="hbtn" id="h-begin" onclick="beginEntry()">BEGIN</button>
     <button class="hbtn sec" id="h-review" style="display:none" onclick="showReview()">REVIEW TODAY</button>
   </div>
-  <div class="home-links">
+  <div class="h-links">
     <button class="hlink" onclick="showWeekly()">WEEK</button>
-    <button class="hlink" onclick="showEvening()">EVENING CLOSE</button>
+    <button class="hlink" onclick="showEvening()">EVENING</button>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════════════════
-     S0 — THE GAP
-══════════════════════════════════════════════════════════ -->
+<!-- S0 GAP -->
 <div id="s0" class="screen">
-  <div id="gap-q">Who is aware right now?</div>
+  <div id="gap-q">Are you the character,<br>or the universe itself?</div>
   <div id="gap-t">10</div>
 </div>
 
-<!-- ══════════════════════════════════════════════════════════
-     S1 — BODY
-══════════════════════════════════════════════════════════ -->
+<!-- S1 QUICK STATE -->
 <div id="s1" class="screen">
   <div class="si">
-    <div class="s-label">01 / Body</div>
-    <div class="s-prompt">How's the machine?</div>
-    <div class="slider-num" id="s-num">5</div>
-    <input type="range" id="s-slider" min="1" max="10" value="5"
-           oninput="document.getElementById('s-num').textContent=this.value" />
-    <div class="tog-row">
-      <div class="tog-lbl">Workout locked in?</div>
-      <div class="tog-btns">
-        <button class="tog-btn" id="wo-yes" onclick="setWorkout('yes')">Yes</button>
-        <button class="tog-btn on" id="wo-skip" onclick="setWorkout('skip')">Skip</button>
-      </div>
+    <div class="lbl">01 / State</div>
+    <div class="prompt" style="font-size:1.2rem;margin-bottom:20px">How's the substrate?</div>
+    <div class="qs-row" id="qr-presence">
+      <div class="qs-name">Presence</div>
+      <div class="qs-btns" id="qb-presence"></div>
     </div>
-    <div class="workout-wrap" id="wo-wrap">
-      <input type="text" id="wo-inp" placeholder="3 words. What's the workout?" />
+    <div class="qs-row" id="qr-energy">
+      <div class="qs-name">Energy</div>
+      <div class="qs-btns" id="qb-energy"></div>
+    </div>
+    <div class="qs-row" id="qr-fear">
+      <div class="qs-name">Fear</div>
+      <div class="qs-btns" id="qb-fear"></div>
+    </div>
+    <div class="qs-row" id="qr-shen">
+      <div class="qs-name">Shen</div>
+      <div class="qs-btns" id="qb-shen"></div>
     </div>
   </div>
-  <button class="adv" onclick="advance(1)">→</button>
+  <button class="adv" id="s1-adv" onclick="advance(1)" style="opacity:.3">→</button>
 </div>
 
-<!-- ══════════════════════════════════════════════════════════
-     S2 — THE BLOCK
-══════════════════════════════════════════════════════════ -->
+<!-- S2 BLOCK -->
 <div id="s2" class="screen">
   <div class="si">
-    <div class="s-label">02 / The Block</div>
-    <div class="s-prompt">What's firing underneath?</div>
-
-    <!-- Chakra block selector -->
-    <div class="block-chips" id="block-chips">
-      <div class="block-chip" id="bc-fear"        onclick="pickBlock('Fear')">Fear<span class="block-chakra">Root</span></div>
-      <div class="block-chip" id="bc-guilt"       onclick="pickBlock('Guilt')">Guilt<span class="block-chakra">Sacral</span></div>
-      <div class="block-chip" id="bc-shame"       onclick="pickBlock('Shame')">Shame<span class="block-chakra">Solar Plexus</span></div>
-      <div class="block-chip" id="bc-grief"       onclick="pickBlock('Grief')">Grief<span class="block-chakra">Heart</span></div>
-      <div class="block-chip" id="bc-deception"   onclick="pickBlock('Self-deception')">Self-deception<span class="block-chakra">Throat</span></div>
-      <div class="block-chip" id="bc-separation"  onclick="pickBlock('Separation')">Separation<span class="block-chakra">Third Eye</span></div>
-      <div class="block-chip" id="bc-attachment"  onclick="pickBlock('Attachment')">Attachment<span class="block-chakra">Crown</span></div>
+    <div class="lbl">02 / The Block</div>
+    <div class="prompt" style="font-size:1.2rem">What's firing underneath?</div>
+    <div class="chips" id="block-chips">
+      <div class="chip" id="bc-fear" onclick="pickBlock('Fear')">Fear<span>Root</span></div>
+      <div class="chip" id="bc-guilt" onclick="pickBlock('Guilt')">Guilt<span>Sacral</span></div>
+      <div class="chip" id="bc-shame" onclick="pickBlock('Shame')">Shame<span>Solar Plexus</span></div>
+      <div class="chip" id="bc-grief" onclick="pickBlock('Grief')">Grief<span>Heart</span></div>
+      <div class="chip" id="bc-deception" onclick="pickBlock('Self-deception')">Self-deception<span>Throat</span></div>
+      <div class="chip" id="bc-separation" onclick="pickBlock('Separation')">Separation<span>Third Eye</span></div>
+      <div class="chip" id="bc-attachment" onclick="pickBlock('Attachment')">Attachment<span>Crown</span></div>
     </div>
-
-    <div class="ml">What are you NOT carrying today?</div>
-    <div class="discard-wrap">
-      <input type="text" id="disc-inp" placeholder="A worry, a loop, a voice..." />
+    <div class="ml">Not carrying today</div>
+    <div class="disc-wrap">
+      <input type="text" id="disc-inp" placeholder="A worry, a loop, a voice..."/>
       <div id="disc-anim"></div>
     </div>
-    <div id="food-sec">
-      <div class="ml">What are you NOT eating today?</div>
-      <input type="text" id="food-inp" placeholder="Name it." />
+    <div id="food-s">
+      <div class="ml">Not eating today</div>
+      <input type="text" id="food-inp" placeholder="Name it."/>
     </div>
   </div>
   <button class="adv" onclick="advance(2)">→</button>
 </div>
 
-<!-- ══════════════════════════════════════════════════════════
-     S3 — THE CHARACTER
-══════════════════════════════════════════════════════════ -->
+<!-- S3 CHARACTER -->
 <div id="s3" class="screen">
   <div class="si">
-    <div class="s-label">03 / The Character</div>
-    <div class="s-prompt">Who are you today?</div>
+    <div class="lbl">03 / Identity</div>
+    <div class="prompt" style="font-size:1.2rem;margin-bottom:20px">Who walks out the door?</div>
     <div class="char-grid">
-      <div class="char-card" id="cc-itachi"    onclick="pickChar('Itachi')">
-        <div class="char-obj">Obj 1 · Foundation</div>
-        <div class="char-name">Itachi</div>
-        <div class="char-sub">Stoic. Carries grief. Zero drama.</div>
+      <div class="cc" id="cc-itachi" onclick="pickChar('Itachi')">
+        <div class="cc-obj">Obj 1 · Foundation</div>
+        <div class="cc-name">Itachi</div>
+        <div class="cc-sub">Stoic. Carries pain. Zero drama.</div>
       </div>
-      <div class="char-card" id="cc-gojo"      onclick="pickChar('Gojo')">
-        <div class="char-obj">Obj 2–3 · Foundation</div>
-        <div class="char-name">Gojo</div>
-        <div class="char-sub">Overwhelming presence. Effortlessly bold.</div>
+      <div class="cc" id="cc-gojo" onclick="pickChar('Gojo')">
+        <div class="cc-obj">Obj 2–3 · Foundation</div>
+        <div class="cc-name">Gojo</div>
+        <div class="cc-sub">Overwhelming presence. Effortlessly bold.</div>
       </div>
-      <div class="char-card" id="cc-shikamaru" onclick="pickChar('Shikamaru')">
-        <div class="char-obj">Obj 4 · Power Move</div>
-        <div class="char-name">Shikamaru</div>
-        <div class="char-sub">Min effort. Max effect. Enjoys the work.</div>
+      <div class="cc" id="cc-shikamaru" onclick="pickChar('Shikamaru')">
+        <div class="cc-obj">Obj 4 · Power Move</div>
+        <div class="cc-name">Shikamaru</div>
+        <div class="cc-sub">Min effort. Max effect. Lazy genius.</div>
       </div>
-      <div class="char-card" id="cc-frank"     onclick="pickChar('Frank')">
-        <div class="char-obj">Obj 5 · Power Move</div>
-        <div class="char-name">Frank</div>
-        <div class="char-sub">Narrative control. Speaks the real frame.</div>
+      <div class="cc" id="cc-frank" onclick="pickChar('Frank')">
+        <div class="cc-obj">Obj 5 · Power Move</div>
+        <div class="cc-name">Frank</div>
+        <div class="cc-sub">Narrative control. The long game.</div>
       </div>
-      <div class="char-card" id="cc-tyrion"    onclick="pickChar('Tyrion')">
-        <div class="char-obj">Obj 6 · Power Move</div>
-        <div class="char-name">Tyrion</div>
-        <div class="char-sub">Build alliances. Wit over force.</div>
+      <div class="cc" id="cc-tyrion" onclick="pickChar('Tyrion')">
+        <div class="cc-obj">Obj 6 · Power Move</div>
+        <div class="cc-name">Tyrion</div>
+        <div class="cc-sub">Build alliances. Wit over force.</div>
       </div>
-      <div class="char-card" id="cc-sherlock"  onclick="pickChar('Sherlock')">
-        <div class="char-obj">Obj 7 · Side Effect</div>
-        <div class="char-name">Sherlock</div>
-        <div class="char-sub">Pattern recognition. Sees what others miss.</div>
+      <div class="cc" id="cc-sherlock" onclick="pickChar('Sherlock')">
+        <div class="cc-obj">Obj 7 · Side Effect</div>
+        <div class="cc-name">Sherlock</div>
+        <div class="cc-sub">Real-time deduction. See what's hidden.</div>
       </div>
-      <div class="char-card" id="cc-tony"      onclick="pickChar('Tony')">
-        <div class="char-obj">Obj 9 · Style Layer</div>
-        <div class="char-name">Tony</div>
-        <div class="char-sub">Systems builder. Creates the future.</div>
+      <div class="cc" id="cc-tony" onclick="pickChar('Tony')">
+        <div class="cc-obj">Obj 9 · Style Layer</div>
+        <div class="cc-name">Tony</div>
+        <div class="cc-sub">Tech solutions. Make yourself indispensable.</div>
       </div>
-      <div class="char-card" id="cc-jinwoo"    onclick="pickChar('Jinwoo')">
-        <div class="char-obj">Obj 10 · Infinite Engine</div>
-        <div class="char-name">Jinwoo</div>
-        <div class="char-sub">Daily progression. Trust the grind.</div>
+      <div class="cc" id="cc-jinwoo" onclick="pickChar('Jinwoo')">
+        <div class="cc-obj">Obj 10 · Engine</div>
+        <div class="cc-name">Jinwoo</div>
+        <div class="cc-sub">Daily progression. Every day stronger.</div>
       </div>
     </div>
   </div>
-  <button class="adv" onclick="advance(3)">→</button>
 </div>
 
-<!-- ══════════════════════════════════════════════════════════
-     S4 — THE OBJECTIVE
-══════════════════════════════════════════════════════════ -->
+<!-- S4 SHADOW MONARCH BRIEF -->
 <div id="s4" class="screen">
   <div class="si">
-    <div class="s-label">04 / The Objective</div>
-    <div class="s-prompt">The War Room</div>
-
-    <!-- Today's cascade objective — tap to cycle -->
-    <div class="obj-box" onclick="cycleObj()">
-      <div class="obj-num" id="obj-num">Objective 1 · Foundation</div>
-      <div class="obj-name" id="obj-name">No stress</div>
-      <div class="obj-chars" id="obj-chars">Itachi</div>
-      <div class="obj-hint">tap to cycle cascade</div>
-    </div>
-
-    <div class="fg">
-      <div class="ml">The Cold Read — one person, what do they want that they're not saying?</div>
-      <div class="two-inp">
-        <input type="text" id="cr-person" placeholder="Person" />
-        <input type="text" id="cr-hyp" placeholder="Hypothesis" />
+    <div class="lbl">04 / SM Brief</div>
+    <div class="prompt" style="font-size:1.2rem;margin-bottom:16px">Load your lens</div>
+    <div class="lens-grid">
+      <div class="lc" id="lc-1" onclick="pickLens('1','Stress scan')">
+        <div class="lc-key">KEY 1</div>
+        <div class="lc-name">Stress scan</div>
+        <div class="lc-sub">Ghost processes, hidden shoulds</div>
+      </div>
+      <div class="lc" id="lc-2" onclick="pickLens('2','Cool check')">
+        <div class="lc-key">KEY 2</div>
+        <div class="lc-name">Cool check</div>
+        <div class="lc-sub">Emotional temp, unreadable face</div>
+      </div>
+      <div class="lc" id="lc-r" onclick="pickLens('r','Risk scan')">
+        <div class="lc-key">KEY R</div>
+        <div class="lc-name">Risk scan</div>
+        <div class="lc-sub">Played safe when bold existed</div>
+      </div>
+      <div class="lc" id="lc-3" onclick="pickLens('3','Leverage audit')">
+        <div class="lc-key">KEY 3</div>
+        <div class="lc-name">Leverage audit</div>
+        <div class="lc-sub">Busy work vs high-value work</div>
+      </div>
+      <div class="lc" id="lc-4" onclick="pickLens('4','Voice check')">
+        <div class="lc-key">KEY 4</div>
+        <div class="lc-name">Voice check</div>
+        <div class="lc-sub">Over-explaining, word ratio</div>
+      </div>
+      <div class="lc" id="lc-5" onclick="pickLens('5','Alliance scan')">
+        <div class="lc-key">KEY 5</div>
+        <div class="lc-name">Alliance scan</div>
+        <div class="lc-sub">Who did you help, who owes you</div>
+      </div>
+      <div class="lc" id="lc-s" onclick="pickLens('s','Sherlock scan')">
+        <div class="lc-key">KEY S</div>
+        <div class="lc-name">Sherlock scan</div>
+        <div class="lc-sub">What others revealed without knowing</div>
+      </div>
+      <div class="lc" id="lc-b" onclick="pickLens('b','Brutal check')">
+        <div class="lc-key">KEY B</div>
+        <div class="lc-name">Brutal check</div>
+        <div class="lc-sub">Confidence + coolness leaks</div>
+      </div>
+      <div class="lc" id="lc-f" onclick="pickLens('f','Underwood audit')">
+        <div class="lc-key">KEY F</div>
+        <div class="lc-name">Underwood audit</div>
+        <div class="lc-sub">Narrative control, strategic patience</div>
+      </div>
+      <div class="lc" id="lc-6" onclick="pickLens('6','Visibility check')">
+        <div class="lc-key">KEY 6</div>
+        <div class="lc-name">Visibility check</div>
+        <div class="lc-sub">Did work reach leadership without you explaining</div>
+      </div>
+      <div class="lc" id="lc-7" onclick="pickLens('7','Energy + enjoy')">
+        <div class="lc-key">KEY 7</div>
+        <div class="lc-name">Energy + enjoy</div>
+        <div class="lc-sub">What drained, what lit you up</div>
+      </div>
+      <div class="lc" id="lc-x" onclick="pickLens('x','Full spectrum')">
+        <div class="lc-key">KEY X</div>
+        <div class="lc-name">Full spectrum</div>
+        <div class="lc-sub">All lenses, ranked by urgency</div>
       </div>
     </div>
     <div class="fg">
-      <div class="ml">The Positioning Move — one thing today that can't be attributed to someone else.</div>
-      <input type="text" id="pos-inp" placeholder="Your visibility play" />
+      <div class="ml">Cold read — one person, what do they want that they're not saying?</div>
+      <div class="two-inp">
+        <input type="text" id="cr-person" placeholder="Person"/>
+        <input type="text" id="cr-hyp" placeholder="Hypothesis"/>
+      </div>
+    </div>
+    <div class="fg">
+      <div class="ml">Positioning move — one thing today that can't be attributed to someone else.</div>
+      <input type="text" id="pos-inp" placeholder="Your visibility play"/>
     </div>
   </div>
   <button class="adv" onclick="advance(4)">→</button>
 </div>
 
-<!-- ══════════════════════════════════════════════════════════
-     S5 — THE BET
-══════════════════════════════════════════════════════════ -->
+<!-- S5 THE BET -->
 <div id="s5" class="screen">
   <div class="si">
-    <div class="s-label">05 / The Bet</div>
-    <div class="s-prompt">The 1%</div>
+    <div class="lbl">05 / The Bet</div>
+    <div class="prompt">The 1%</div>
     <div class="fg">
-      <div class="ml">What's 1% better today vs yesterday?</div>
-      <input type="text" id="kai-inp" placeholder="Tiny. Specific. Doable." />
+      <div class="ml">What's 1% better today?</div>
+      <input type="text" id="kai-inp" placeholder="Tiny. Specific. Doable."/>
     </div>
     <div class="fg">
-      <div class="ml">The stake:</div>
-      <input type="text" id="stk-inp" placeholder="What you lose tonight if you skip it" />
+      <div class="ml">The stake</div>
+      <input type="text" id="stk-inp" placeholder="What you lose tonight if you skip it"/>
     </div>
   </div>
   <button class="adv" onclick="sealEntry()">→</button>
 </div>
 
-<!-- ══════════════════════════════════════════════════════════
-     S6 — THE SEAL
-══════════════════════════════════════════════════════════ -->
+<!-- S6 SEAL -->
 <div id="s6" class="screen" onclick="exitToHome()">
   <div class="si">
     <div class="seal-day" id="seal-day">Day 1</div>
+    <div class="seal-char" id="seal-char"></div>
     <div class="seal-q">The feeling is just lagging behind. It will pass.</div>
     <div class="seal-go" id="seal-go">Go walk.</div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════════════════
-     WEEKLY VIEW
-══════════════════════════════════════════════════════════ -->
+<!-- WEEKLY -->
 <div id="sw" class="screen">
   <div class="si">
     <button class="w-back" onclick="show('sh')">← Back</button>
-    <div class="s-label" style="margin-bottom:28px">Week in Review</div>
+    <div class="lbl" style="margin-bottom:24px">Week in Review</div>
     <div class="w-sec">
-      <div class="w-sec-title">Body Score — 7 days</div>
+      <div class="w-ttl">Body Score — 7 days</div>
       <div class="bars" id="w-bars"></div>
     </div>
     <div class="w-sec">
-      <div class="w-sec-title">Streak</div>
+      <div class="w-ttl">Streak</div>
       <div class="w-stat">Current: <span id="w-streak">0</span> days</div>
     </div>
     <div class="w-sec">
-      <div class="w-sec-title">Most Channelled Character</div>
+      <div class="w-ttl">Most Channelled</div>
       <div class="w-stat" id="w-char">—</div>
     </div>
     <div class="w-sec">
-      <div class="w-sec-title">Most Surfaced Block</div>
+      <div class="w-ttl">Most Surfaced Block</div>
       <div class="w-stat" id="w-block">—</div>
     </div>
     <div class="w-sec">
-      <div class="w-sec-title">Recent Discards</div>
-      <ul class="w-list" id="w-discards"></ul>
+      <div class="w-ttl">Active Lenses This Week</div>
+      <div class="w-stat" id="w-lens">—</div>
     </div>
     <div class="w-sec">
-      <div class="w-sec-title">Cold Read Log</div>
+      <div class="w-ttl">Cold Read Log</div>
       <ul class="w-list" id="w-cold"></ul>
     </div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════════════════
-     EVENING CLOSE
-══════════════════════════════════════════════════════════ -->
+<!-- EVENING -->
 <div id="se" class="screen">
   <div class="si">
     <button class="w-back" onclick="show('sh')">← Back</button>
-    <div class="s-label" style="margin-bottom:16px">Evening Close</div>
-    <div class="s-prompt" style="font-size:1.2rem;margin-bottom:24px">Close the loop</div>
+    <div class="lbl" style="margin-bottom:14px">Evening Close</div>
+    <div class="prompt" style="font-size:1.1rem;margin-bottom:20px">Close the loop</div>
     <div class="ev-row">
       <div class="ev-lbl">Did you do the positioning move?</div>
       <div class="yn">
@@ -678,541 +416,286 @@
       </div>
     </div>
     <div class="ev-row">
-      <div class="ev-lbl">Did you keep the food commitment?</div>
+      <div class="ev-lbl">Food commitment kept?</div>
       <div class="yn">
         <button class="yn-btn" id="ev-fy" onclick="setEv('food','yes')">Y</button>
         <button class="yn-btn" id="ev-fn" onclick="setEv('food','no')">N</button>
       </div>
     </div>
     <div class="ev-row">
-      <div class="ev-lbl">Was your cold read accurate?</div>
+      <div class="ev-lbl">Cold read accurate?</div>
       <div class="yn">
         <button class="yn-btn" id="ev-cy" onclick="setEv('cold','yes')">Y</button>
         <button class="yn-btn" id="ev-cn" onclick="setEv('cold','no')">N</button>
       </div>
     </div>
-    <div id="cr-wrong-wrap">
-      <input type="text" id="cr-wrong" placeholder="What actually happened?" />
+    <div id="crw-wrap">
+      <input type="text" id="crw-inp" placeholder="What actually happened?"/>
     </div>
     <div class="ev-row">
-      <div class="ev-lbl">Streak intact — did you walk?</div>
+      <div class="ev-lbl">Did you walk?</div>
       <div class="yn">
         <button class="yn-btn" id="ev-wy" onclick="setEv('walk','yes')">Y</button>
         <button class="yn-btn" id="ev-wn" onclick="setEv('walk','no')">N</button>
       </div>
     </div>
-    <button class="ev-submit" onclick="sealEvening()">SEAL THE DAY</button>
+    <button class="ev-sub" onclick="sealEvening()">SEAL THE DAY</button>
   </div>
 </div>
 
-<!-- Evening checkmark overlay -->
-<div id="seal-ov">
-  <div class="seal-ov-check">✓</div>
-</div>
+<div id="ov"><div class="ov-check">✓</div></div>
 
 <script>
-// ══════════════════════════════════════════════════════════════════
-// CONFIG — same Google Sheet, morning tab
-// ══════════════════════════════════════════════════════════════════
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwNdiF57hIEiToT6kirL5hkmArsunQQKK9XLb9mGZbuFcJHfta0EXaOlETbO-js2M0S/exec';
-const SECRET_KEY = 'anurag2024night';
+const SCRIPT_URL='https://script.google.com/macros/s/AKfycbwNdiF57hIEiToT6kirL5hkmArsunQQKK9XLb9mGZbuFcJHfta0EXaOlETbO-js2M0S/exec';
+const SECRET_KEY='anurag2024night';
+const PROG=['s1','s2','s3','s4','s5'];
+const CHAR_IDS={Itachi:'cc-itachi',Gojo:'cc-gojo',Shikamaru:'cc-shikamaru',Frank:'cc-frank',Tyrion:'cc-tyrion',Sherlock:'cc-sherlock',Tony:'cc-tony',Jinwoo:'cc-jinwoo'};
+const BLOCK_IDS={Fear:'bc-fear',Guilt:'bc-guilt',Shame:'bc-shame',Grief:'bc-grief','Self-deception':'bc-deception',Separation:'bc-separation',Attachment:'bc-attachment'};
+const QS_DIMS=['presence','energy','fear','shen'];
 
-// ── 11 Objectives (cascade order) ──────────────────────────────────
-const OBJECTIVES = [
-  { n:1,  name:'No stress',                    chars:'Itachi',            cat:'Foundation'      },
-  { n:2,  name:'Be cool',                      chars:'Gojo',              cat:'Foundation'      },
-  { n:3,  name:'Be bold — take more risks',    chars:'Gojo + Tony',       cat:'Foundation'      },
-  { n:4,  name:'Work less, be more effective', chars:'Shikamaru',         cat:'Power Move'      },
-  { n:5,  name:'My voice matters most',        chars:'Frank',             cat:'Power Move'      },
-  { n:6,  name:'Build alliances',              chars:'Tyrion',            cat:'Power Move'      },
-  { n:7,  name:'People respect me',            chars:'Sherlock',          cat:'Side Effect'     },
-  { n:8,  name:'Enjoy the work',               chars:'Shikamaru',         cat:'Side Effect'     },
-  { n:9,  name:'Be like my characters',        chars:'All eight',         cat:'Style Layer'     },
-  { n:10, name:'Keep developing',              chars:'Jinwoo',            cat:'Infinite Engine' },
-  { n:11, name:'Open all 7 chakras',           chars:'All eight + body',  cat:'Meta-Objective'  },
-];
+// state
+let character=null,block=null,lens=null,lensKey=null,workout='skip',discardVal='',evState={},gapTmr=null;
+let qsScores={presence:0,energy:0,fear:0,shen:0};
+let qsDone=0;
 
-// ── 8 Characters ────────────────────────────────────────────────────
-const CHAR_IDS = {
-  'Itachi':'cc-itachi', 'Gojo':'cc-gojo', 'Shikamaru':'cc-shikamaru',
-  'Frank':'cc-frank',   'Tyrion':'cc-tyrion', 'Sherlock':'cc-sherlock',
-  'Tony':'cc-tony',     'Jinwoo':'cc-jinwoo',
-};
+const today=()=>new Date().toISOString().slice(0,10);
+const dayNum=()=>Math.floor(Date.now()/86400000);
+const vib=p=>navigator.vibrate&&navigator.vibrate(p);
 
-// ── 7 Chakra blocks ─────────────────────────────────────────────────
-const BLOCK_IDS = {
-  'Fear':'bc-fear', 'Guilt':'bc-guilt', 'Shame':'bc-shame', 'Grief':'bc-grief',
-  'Self-deception':'bc-deception', 'Separation':'bc-separation', 'Attachment':'bc-attachment',
-};
-
-// Screen ID → progress-screens index (1-indexed, 5 steps)
-const PROG_SCREENS = ['s1','s2','s3','s4','s5'];
-
-// ══════════════════════════════════════════════════════════════════
-// STATE
-// ══════════════════════════════════════════════════════════════════
-let character  = null;
-let block      = null;
-let objIdx     = 0;
-let workout    = 'skip';
-let discardVal = '';
-let evState    = {};
-let gapTmr     = null;
-
-// ══════════════════════════════════════════════════════════════════
-// UTILS
-// ══════════════════════════════════════════════════════════════════
-const today  = () => new Date().toISOString().slice(0,10);
-const dayNum = () => Math.floor(Date.now() / 86400000);
-const vib    = (p) => navigator.vibrate && navigator.vibrate(p);
-
-function getDB() {
-  try { return JSON.parse(localStorage.getItem('the_entry_v1') || '{}'); }
-  catch { return {}; }
+function getDB(){try{return JSON.parse(localStorage.getItem('the_entry_v2')||'{}')}catch{return{}}}
+function setDB(db){
+  const cut=new Date();cut.setDate(cut.getDate()-90);
+  const cs=cut.toISOString().slice(0,10);
+  Object.keys(db).forEach(k=>{if(k<cs)delete db[k]});
+  localStorage.setItem('the_entry_v2',JSON.stringify(db));
 }
-
-function setDB(db) {
-  const cut = new Date();
-  cut.setDate(cut.getDate() - 90);
-  const cutStr = cut.toISOString().slice(0,10);
-  Object.keys(db).forEach(k => { if (k < cutStr) delete db[k]; });
-  localStorage.setItem('the_entry_v1', JSON.stringify(db));
-}
-
-function getStreak() {
-  const db = getDB();
-  let n = 0, d = new Date();
-  while (true) {
-    const k = d.toISOString().slice(0,10);
-    if (db[k] && db[k].completedAt) { n++; d.setDate(d.getDate()-1); }
-    else break;
-  }
+function getStreak(){
+  const db=getDB();let n=0,d=new Date();
+  while(true){const k=d.toISOString().slice(0,10);if(db[k]&&db[k].completedAt){n++;d.setDate(d.getDate()-1)}else break}
   return n;
 }
+const doneToday=()=>{const db=getDB();return!!(db[today()]&&db[today()].completedAt)};
 
-const doneToday = () => { const db = getDB(); return !!(db[today()] && db[today()].completedAt); };
-
-// ══════════════════════════════════════════════════════════════════
-// SCREEN TRANSITIONS
-// ══════════════════════════════════════════════════════════════════
-function show(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  const el = document.getElementById(id);
-  if (el) el.classList.add('active');
-
-  const pbWrap = document.getElementById('pb-wrap');
-  const pb     = document.getElementById('pb');
-  const idx    = PROG_SCREENS.indexOf(id);
-  if (idx >= 0) {
-    pbWrap.classList.add('on');
-    pb.style.width = ((idx + 1) / PROG_SCREENS.length * 100) + '%';
-  } else {
-    pbWrap.classList.remove('on');
-  }
-
-  // Auto-focus first text input on entry screens (not weekly/evening)
-  if (!['sh','s0','s6','sw','se'].includes(id)) {
-    setTimeout(() => {
-      const inp = el && el.querySelector('input[type="text"]');
-      if (inp) inp.focus();
-    }, 340);
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  const el=document.getElementById(id);
+  if(el)el.classList.add('active');
+  const pbw=document.getElementById('pb-w'),pb=document.getElementById('pb');
+  const idx=PROG.indexOf(id);
+  if(idx>=0){pbw.classList.add('on');pb.style.width=((idx+1)/PROG.length*100)+'%'}
+  else pbw.classList.remove('on');
+  if(!['sh','s0','s6','sw','se'].includes(id)){
+    setTimeout(()=>{const inp=el&&el.querySelector('input[type=text]');if(inp)inp.focus()},320);
   }
 }
 
-// ══════════════════════════════════════════════════════════════════
-// HOME
-// ══════════════════════════════════════════════════════════════════
-function refreshHome() {
-  const streak  = getStreak();
-  document.getElementById('h-streak').textContent = streak || 1;
-  const done    = doneToday();
-  document.getElementById('h-done').style.display    = done ? 'block' : 'none';
-  document.getElementById('h-begin').textContent      = done ? 'BEGIN AGAIN' : 'BEGIN';
-  document.getElementById('h-review').style.display   = done ? 'block' : 'none';
+function refreshHome(){
+  const s=getStreak();
+  document.getElementById('h-streak').textContent=s||1;
+  const done=doneToday();
+  document.getElementById('h-done').style.display=done?'block':'none';
+  document.getElementById('h-begin').textContent=done?'BEGIN AGAIN':'BEGIN';
+  document.getElementById('h-review').style.display=done?'block':'none';
 }
 
-// ══════════════════════════════════════════════════════════════════
-// BEGIN ENTRY — reset all fields
-// ══════════════════════════════════════════════════════════════════
-function beginEntry() {
+// build quick state buttons
+function buildQS(){
+  QS_DIMS.forEach(dim=>{
+    const wrap=document.getElementById('qb-'+dim);
+    wrap.innerHTML='';
+    for(let i=1;i<=5;i++){
+      const b=document.createElement('button');
+      b.className='qs-btn';
+      b.textContent=i;
+      b.onclick=()=>scoreQS(dim,i);
+      wrap.appendChild(b);
+    }
+  });
+}
+
+function scoreQS(dim,score){
+  vib(20);
+  qsScores[dim]=score;
+  // highlight
+  const btns=document.getElementById('qb-'+dim).querySelectorAll('.qs-btn');
+  btns.forEach((b,i)=>b.classList.toggle('on',i+1===score));
+  document.getElementById('qr-'+dim).classList.add('done');
+  qsDone++;
+  // check if all done
+  const allDone=QS_DIMS.every(d=>qsScores[d]>0);
+  const advBtn=document.getElementById('s1-adv');
+  if(allDone){advBtn.style.opacity='1';setTimeout(()=>advance(1),400)}
+}
+
+function beginEntry(){
   vib(40);
-  character = null; block = null; workout = 'skip'; discardVal = '';
-
-  document.getElementById('wo-yes').classList.remove('on');
-  document.getElementById('wo-skip').classList.add('on');
-  document.getElementById('wo-wrap').classList.remove('open');
-  document.getElementById('wo-inp').value = '';
-
-  document.getElementById('disc-inp').value = '';
-  document.getElementById('disc-inp').style.opacity = '1';
+  character=null;block=null;lens=null;lensKey=null;discardVal='';workout='skip';
+  qsScores={presence:0,energy:0,fear:0,shen:0};qsDone=0;
+  buildQS();
+  QS_DIMS.forEach(d=>{document.getElementById('qr-'+d).classList.remove('done')});
+  document.getElementById('s1-adv').style.opacity='.3';
+  document.getElementById('disc-inp').value='';
+  document.getElementById('disc-inp').style.opacity='1';
   document.getElementById('disc-anim').classList.remove('falling');
-  document.getElementById('disc-anim').style.opacity = '0';
-  document.getElementById('food-sec').classList.remove('on');
-  document.getElementById('food-inp').value = '';
-
-  document.querySelectorAll('.block-chip').forEach(c => c.classList.remove('on'));
-  document.querySelectorAll('.char-card').forEach(c => c.classList.remove('on'));
-
-  document.getElementById('cr-person').value = '';
-  document.getElementById('cr-hyp').value = '';
-  document.getElementById('pos-inp').value = '';
-  document.getElementById('kai-inp').value = '';
-  document.getElementById('stk-inp').value = '';
-
-  // Default objective = 1, user can cycle
-  objIdx = 0;
-  renderObj();
-
+  document.getElementById('disc-anim').style.opacity='0';
+  document.getElementById('food-s').classList.remove('on');
+  document.getElementById('food-inp').value='';
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
+  document.querySelectorAll('.cc').forEach(c=>c.classList.remove('on'));
+  document.querySelectorAll('.lc').forEach(c=>c.classList.remove('on'));
+  ['cr-person','cr-hyp','pos-inp','kai-inp','stk-inp'].forEach(id=>document.getElementById(id).value='');
   startGap();
 }
 
-// ══════════════════════════════════════════════════════════════════
-// SCREEN 0 — GAP
-// ══════════════════════════════════════════════════════════════════
-function startGap() {
+function startGap(){
   show('s0');
-  const qEl = document.getElementById('gap-q');
-  const tEl = document.getElementById('gap-t');
-  qEl.classList.remove('on');
-  tEl.textContent = '10';
-  if (gapTmr) clearInterval(gapTmr);
-
-  setTimeout(() => qEl.classList.add('on'), 2000);
-
-  let n = 10;
-  gapTmr = setInterval(() => {
-    n--;
-    tEl.textContent = n;
-    if (n <= 0) {
-      clearInterval(gapTmr);
-      gapTmr = null;
-      show('s1');
-    }
-  }, 1000);
+  const qEl=document.getElementById('gap-q'),tEl=document.getElementById('gap-t');
+  qEl.classList.remove('on');tEl.textContent='10';
+  if(gapTmr)clearInterval(gapTmr);
+  setTimeout(()=>qEl.classList.add('on'),2000);
+  let n=10;
+  gapTmr=setInterval(()=>{n--;tEl.textContent=n;if(n<=0){clearInterval(gapTmr);gapTmr=null;show('s1')}},1000);
 }
 
-// ══════════════════════════════════════════════════════════════════
-// SCREEN 1 — BODY
-// ══════════════════════════════════════════════════════════════════
-function setWorkout(v) {
-  workout = v;
-  document.getElementById('wo-yes').classList.toggle('on', v === 'yes');
-  document.getElementById('wo-skip').classList.toggle('on', v === 'skip');
-  const w = document.getElementById('wo-wrap');
-  if (v === 'yes') {
-    w.classList.add('open');
-    setTimeout(() => document.getElementById('wo-inp').focus(), 400);
-  } else {
-    w.classList.remove('open');
-  }
-  vib(20);
-}
-
-// ══════════════════════════════════════════════════════════════════
-// SCREEN 2 — DISCARD ANIMATION
-// ══════════════════════════════════════════════════════════════════
-function runDiscardAnim(val, cb) {
-  const inp  = document.getElementById('disc-inp');
-  const anim = document.getElementById('disc-anim');
-  anim.textContent = val;
-  anim.style.opacity = '1';
-  anim.style.animation = 'none';
-  inp.style.opacity = '0';
-
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      anim.classList.add('falling');
-      vib([30, 20, 30]);
-    });
-  });
-
-  setTimeout(() => {
-    anim.classList.remove('falling');
-    anim.style.opacity = '0';
-    inp.value = '';
-    inp.style.opacity = '1';
-    cb();
-  }, 880);
-}
-
-// ══════════════════════════════════════════════════════════════════
-// SCREEN 2 — BLOCK PICKER
-// ══════════════════════════════════════════════════════════════════
-function pickBlock(name) {
-  block = name;
-  document.querySelectorAll('.block-chip').forEach(c => c.classList.remove('on'));
+function pickBlock(name){
+  block=name;
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
   document.getElementById(BLOCK_IDS[name]).classList.add('on');
   vib(20);
 }
 
-// ══════════════════════════════════════════════════════════════════
-// SCREEN 3 — CHARACTER PICKER
-// ══════════════════════════════════════════════════════════════════
-function pickChar(name) {
-  character = name;
-  document.querySelectorAll('.char-card').forEach(c => c.classList.remove('on'));
+function pickChar(name){
+  character=name;
+  document.querySelectorAll('.cc').forEach(c=>c.classList.remove('on'));
   document.getElementById(CHAR_IDS[name]).classList.add('on');
   vib(25);
+  setTimeout(()=>advance(3),380);
 }
 
-// ══════════════════════════════════════════════════════════════════
-// SCREEN 4 — CYCLE OBJECTIVE (cascade order)
-// ══════════════════════════════════════════════════════════════════
-function renderObj() {
-  const o = OBJECTIVES[objIdx];
-  document.getElementById('obj-num').textContent  = `Objective ${o.n} · ${o.cat}`;
-  document.getElementById('obj-name').textContent = o.name;
-  document.getElementById('obj-chars').textContent = o.chars;
+function pickLens(key,name){
+  lensKey=key;lens=name;
+  document.querySelectorAll('.lc').forEach(c=>c.classList.remove('on'));
+  document.getElementById('lc-'+key).classList.add('on');
+  vib(20);
+  setTimeout(()=>document.getElementById('cr-person').focus(),300);
 }
 
-function cycleObj() {
-  objIdx = (objIdx + 1) % OBJECTIVES.length;
-  renderObj();
-  vib(15);
-}
-
-// ══════════════════════════════════════════════════════════════════
-// ADVANCE — screen-number driven
-// ══════════════════════════════════════════════════════════════════
-function advance(from) {
-  vib(30);
-
-  // Screen 2: first tap triggers animation + reveals food; second tap advances
-  if (from === 2) {
-    const fs = document.getElementById('food-sec');
-    if (!fs.classList.contains('on')) {
-      const val = document.getElementById('disc-inp').value.trim();
-      discardVal = val;
-      if (val) {
-        runDiscardAnim(val, () => {
-          fs.classList.add('on');
-          setTimeout(() => document.getElementById('food-inp').focus(), 650);
-        });
-      } else {
-        // No text — just reveal food section
-        fs.classList.add('on');
-        setTimeout(() => document.getElementById('food-inp').focus(), 300);
-      }
+function advance(from){
+  vib(28);
+  if(from===2){
+    const fs=document.getElementById('food-s');
+    if(!fs.classList.contains('on')){
+      const val=document.getElementById('disc-inp').value.trim();
+      discardVal=val;
+      if(val){
+        const inp=document.getElementById('disc-inp'),anim=document.getElementById('disc-anim');
+        anim.textContent=val;anim.style.opacity='1';anim.style.animation='none';inp.style.opacity='0';
+        requestAnimationFrame(()=>requestAnimationFrame(()=>{anim.classList.add('falling');vib([25,15,25])}));
+        setTimeout(()=>{anim.classList.remove('falling');anim.style.opacity='0';inp.value='';inp.style.opacity='1';fs.classList.add('on');setTimeout(()=>document.getElementById('food-inp').focus(),500)},830);
+      }else{fs.classList.add('on');setTimeout(()=>document.getElementById('food-inp').focus(),200)}
       return;
     }
   }
-
-  // Map from-screen-number to next screen id
-  const next = ['','s2','s3','s4','s5'][from];
-  if (next) show(next);
+  const next=['','s2','s3','s4','s5'][from];
+  if(next)show(next);
 }
 
-// ══════════════════════════════════════════════════════════════════
-// SEAL ENTRY — save + show seal screen
-// ══════════════════════════════════════════════════════════════════
-async function sealEntry() {
-  vib([50, 30, 50]);
-
-  const obj = OBJECTIVES[objIdx];
-  const entry = {
-    date:              today(),
-    bodyScore:         parseInt(document.getElementById('s-slider').value),
-    workoutLocked:     workout === 'yes',
-    workout:           document.getElementById('wo-inp').value.trim(),
-    block:             block || '',
-    discard:           discardVal || document.getElementById('disc-inp').value.trim(),
-    foodNot:           document.getElementById('food-inp').value.trim(),
-    character:         character || '',
-    objective:         `${obj.n} — ${obj.name}`,
-    objectiveChars:    obj.chars,
-    coldReadPerson:    document.getElementById('cr-person').value.trim(),
+async function sealEntry(){
+  vib([45,25,45]);
+  const entry={
+    date:today(),
+    presence:qsScores.presence,energy:qsScores.energy,fear:qsScores.fear,shen:qsScores.shen,
+    block:block||'',discard:discardVal||document.getElementById('disc-inp').value.trim(),
+    foodNot:document.getElementById('food-inp').value.trim(),
+    character:character||'',lens:lens||'',lensKey:lensKey||'',
+    coldReadPerson:document.getElementById('cr-person').value.trim(),
     coldReadHypothesis:document.getElementById('cr-hyp').value.trim(),
-    positioningMove:   document.getElementById('pos-inp').value.trim(),
-    kaizen:            document.getElementById('kai-inp').value.trim(),
-    stake:             document.getElementById('stk-inp').value.trim(),
-    completedAt:       new Date().toISOString(),
+    positioningMove:document.getElementById('pos-inp').value.trim(),
+    kaizen:document.getElementById('kai-inp').value.trim(),
+    stake:document.getElementById('stk-inp').value.trim(),
+    completedAt:new Date().toISOString(),
   };
-
-  const db = getDB();
-  db[today()] = entry;
-  setDB(db);
-
-  const streak = getStreak();
-  document.getElementById('seal-day').textContent = 'Day ' + streak;
-  const goEl = document.getElementById('seal-go');
-  goEl.classList.remove('on');
+  const db=getDB();db[today()]=entry;setDB(db);
+  const streak=getStreak();
+  document.getElementById('seal-day').textContent='Day '+streak;
+  document.getElementById('seal-char').textContent=character?'Running: '+character:'';
+  const go=document.getElementById('seal-go');go.classList.remove('on');
   show('s6');
-  setTimeout(() => goEl.classList.add('on'), 2000);
-
-  // Background push to Google Sheets (morning tab)
-  // Note: your Apps Script needs to handle tab:'morning' — see readme below
-  fetch(SCRIPT_URL, {
-    method: 'POST',
-    body: JSON.stringify({ ...entry, key: SECRET_KEY, tab: 'morning' }),
-  }).catch(() => {});
+  setTimeout(()=>go.classList.add('on'),2000);
+  fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify({...entry,key:SECRET_KEY,tab:'morning'})}).catch(()=>{});
 }
 
-function exitToHome() {
-  if (gapTmr) { clearInterval(gapTmr); gapTmr = null; }
-  refreshHome();
-  show('sh');
+function exitToHome(){if(gapTmr){clearInterval(gapTmr);gapTmr=null}refreshHome();show('sh')}
+
+function showReview(){
+  const e=getDB()[today()];if(!e)return;
+  alert(`State: Presence ${e.presence} · Energy ${e.energy} · Fear ${e.fear} · Shen ${e.shen}\nBlock: ${e.block||'—'}\nCharacter: ${e.character||'—'}\nLens: ${e.lens||'—'}\nCold read: ${e.coldReadPerson} — ${e.coldReadHypothesis}\nPositioning: ${e.positioningMove||'—'}\n1%: ${e.kaizen||'—'}\nStake: ${e.stake||'—'}`);
 }
 
-// ══════════════════════════════════════════════════════════════════
-// REVIEW TODAY
-// ══════════════════════════════════════════════════════════════════
-function showReview() {
-  const e = getDB()[today()];
-  if (!e) return;
-  alert(
-    `Body: ${e.bodyScore}/10\n` +
-    `Block: ${e.block || '—'}\n` +
-    `Character: ${e.character || '—'}\n` +
-    `Objective: ${e.objective || '—'}\n` +
-    `Discard: ${e.discard || '—'}\n` +
-    `Not eating: ${e.foodNot || '—'}\n` +
-    `Cold read: ${e.coldReadPerson} — ${e.coldReadHypothesis}\n` +
-    `Positioning: ${e.positioningMove || '—'}\n` +
-    `1%: ${e.kaizen || '—'}\n` +
-    `Stake: ${e.stake || '—'}`
-  );
-}
-
-// ══════════════════════════════════════════════════════════════════
-// WEEKLY VIEW
-// ══════════════════════════════════════════════════════════════════
-function showWeekly() {
-  const db   = getDB();
-  const days = [];
-  for (let i = 6; i >= 0; i--) {
-    const d = new Date();
-    d.setDate(d.getDate() - i);
-    days.push(d.toISOString().slice(0,10));
-  }
-
-  // Bars
-  const barsEl = document.getElementById('w-bars');
-  barsEl.innerHTML = '';
-  days.forEach(d => {
-    const e     = db[d];
-    const score = e ? (e.bodyScore || 0) : 0;
-    const h     = score ? Math.round(score / 10 * 50) + 8 : 2;
-    const lbl   = d.slice(5).replace('-','/');
-    const col   = document.createElement('div');
-    col.className = 'bar-col';
-    col.innerHTML = `<div class="bar" style="height:${h}px"></div><div class="bar-lbl">${lbl}</div>`;
-    barsEl.appendChild(col);
+function showWeekly(){
+  const db=getDB(),days=[];
+  for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);days.push(d.toISOString().slice(0,10))}
+  // bars (presence score)
+  const bEl=document.getElementById('w-bars');bEl.innerHTML='';
+  days.forEach(d=>{
+    const e=db[d],s=e?(e.presence||0):0,h=s?Math.round(s/5*48)+6:2,l=d.slice(5).replace('-','/');
+    const col=document.createElement('div');col.className='bc';
+    col.innerHTML=`<div class="bar" style="height:${h}px"></div><div class="bl">${l}</div>`;
+    bEl.appendChild(col);
   });
-
-  document.getElementById('w-streak').textContent = getStreak();
-
-  // Most channelled character
-  const cc = {};
-  days.forEach(d => { const e = db[d]; if (e && e.character) cc[e.character] = (cc[e.character]||0)+1; });
-  const topChar = Object.entries(cc).sort((a,b)=>b[1]-a[1])[0];
-  document.getElementById('w-char').innerHTML = topChar
-    ? `<span>${topChar[0]}</span> — ${topChar[1]}x this week` : '—';
-
-  // Most surfaced block
-  const bc = {};
-  days.forEach(d => { const e = db[d]; if (e && e.block) bc[e.block] = (bc[e.block]||0)+1; });
-  const topBlock = Object.entries(bc).sort((a,b)=>b[1]-a[1])[0];
-  document.getElementById('w-block').innerHTML = topBlock
-    ? `<span>${topBlock[0]}</span> — ${topBlock[1]}x this week` : '—';
-
-  // Discards
-  const dEl = document.getElementById('w-discards');
-  dEl.innerHTML = '';
-  days.forEach(d => {
-    const e = db[d];
-    if (e && e.discard) {
-      const li = document.createElement('li');
-      li.textContent = `${d.slice(5)} — ${e.discard}`;
-      dEl.appendChild(li);
-    }
-  });
-  if (!dEl.children.length) dEl.innerHTML = '<li>No discards this week.</li>';
-
-  // Cold reads
-  const cEl = document.getElementById('w-cold');
-  cEl.innerHTML = '';
-  days.forEach(d => {
-    const e = db[d];
-    if (e && e.coldReadPerson) {
-      const li = document.createElement('li');
-      li.innerHTML = `${d.slice(5)} — <strong>${e.coldReadPerson}</strong>: ${e.coldReadHypothesis}`;
-      cEl.appendChild(li);
-    }
-  });
-  if (!cEl.children.length) cEl.innerHTML = '<li>No cold reads this week.</li>';
-
+  document.getElementById('w-streak').textContent=getStreak();
+  // char
+  const cc={};days.forEach(d=>{const e=db[d];if(e&&e.character)cc[e.character]=(cc[e.character]||0)+1});
+  const tc=Object.entries(cc).sort((a,b)=>b[1]-a[1])[0];
+  document.getElementById('w-char').innerHTML=tc?`<span>${tc[0]}</span> — ${tc[1]}x`:'—';
+  // block
+  const bc={};days.forEach(d=>{const e=db[d];if(e&&e.block)bc[e.block]=(bc[e.block]||0)+1});
+  const tb=Object.entries(bc).sort((a,b)=>b[1]-a[1])[0];
+  document.getElementById('w-block').innerHTML=tb?`<span>${tb[0]}</span> — ${tb[1]}x`:'—';
+  // lens
+  const lc={};days.forEach(d=>{const e=db[d];if(e&&e.lens)lc[e.lens]=(lc[e.lens]||0)+1});
+  const tl=Object.entries(lc).sort((a,b)=>b[1]-a[1])[0];
+  document.getElementById('w-lens').innerHTML=tl?`<span>${tl[0]}</span> — ${tl[1]}x`:'—';
+  // cold reads
+  const cEl=document.getElementById('w-cold');cEl.innerHTML='';
+  days.forEach(d=>{const e=db[d];if(e&&e.coldReadPerson){const li=document.createElement('li');li.innerHTML=`${d.slice(5)} — <strong>${e.coldReadPerson}</strong>: ${e.coldReadHypothesis}`;cEl.appendChild(li)}});
+  if(!cEl.children.length)cEl.innerHTML='<li>No cold reads this week.</li>';
   show('sw');
 }
 
-// ══════════════════════════════════════════════════════════════════
-// EVENING CLOSE
-// ══════════════════════════════════════════════════════════════════
-function showEvening() {
-  evState = {};
-  ['ev-py','ev-pn','ev-fy','ev-fn','ev-cy','ev-cn','ev-wy','ev-wn']
-    .forEach(id => document.getElementById(id).className = 'yn-btn');
-  document.getElementById('cr-wrong-wrap').classList.remove('open');
-  document.getElementById('cr-wrong').value = '';
+function showEvening(){
+  evState={};
+  ['ev-py','ev-pn','ev-fy','ev-fn','ev-cy','ev-cn','ev-wy','ev-wn'].forEach(id=>document.getElementById(id).className='yn-btn');
+  document.getElementById('crw-wrap').classList.remove('open');
+  document.getElementById('crw-inp').value='';
   show('se');
 }
-
-function setEv(field, val) {
-  evState[field] = val;
-  vib(20);
-  const eid = { pos:'p', food:'f', cold:'c', walk:'w' }[field];
-  document.getElementById(`ev-${eid}y`).className = val === 'yes' ? 'yn-btn y' : 'yn-btn';
-  document.getElementById(`ev-${eid}n`).className = val === 'no'  ? 'yn-btn n' : 'yn-btn';
-  if (field === 'cold') {
-    document.getElementById('cr-wrong-wrap').classList.toggle('open', val === 'no');
-  }
+function setEv(field,val){
+  evState[field]=val;vib(18);
+  const m={pos:'p',food:'f',cold:'c',walk:'w'}[field];
+  document.getElementById(`ev-${m}y`).className=val==='yes'?'yn-btn y':'yn-btn';
+  document.getElementById(`ev-${m}n`).className=val==='no'?'yn-btn n':'yn-btn';
+  if(field==='cold')document.getElementById('crw-wrap').classList.toggle('open',val==='no');
+}
+function sealEvening(){
+  vib([35,15,35,15,55]);
+  const db=getDB(),e=db[today()];
+  if(e){e.evening={positioningDone:evState.pos==='yes',foodKept:evState.food==='yes',coldReadAccurate:evState.cold==='yes',coldReadActual:document.getElementById('crw-inp').value.trim(),walked:evState.walk==='yes',closedAt:new Date().toISOString()};db[today()]=e;setDB(db)}
+  const ov=document.getElementById('ov');ov.classList.add('on');
+  setTimeout(()=>{ov.classList.remove('on');refreshHome();show('sh')},1300);
 }
 
-function sealEvening() {
-  vib([40, 20, 40, 20, 60]);
-  const db = getDB();
-  const e  = db[today()];
-  if (e) {
-    e.evening = {
-      positioningDone:   evState.pos  === 'yes',
-      foodKept:          evState.food === 'yes',
-      coldReadAccurate:  evState.cold === 'yes',
-      coldReadActual:    document.getElementById('cr-wrong').value.trim(),
-      walked:            evState.walk === 'yes',
-      closedAt:          new Date().toISOString(),
-    };
-    db[today()] = e;
-    setDB(db);
+// swipe right
+let tx=0,ty=0;
+document.addEventListener('touchstart',e=>{tx=e.touches[0].clientX;ty=e.touches[0].clientY},{passive:true});
+document.addEventListener('touchend',e=>{
+  const dx=e.changedTouches[0].clientX-tx,dy=e.changedTouches[0].clientY-ty;
+  if(dx>65&&Math.abs(dy)<50){
+    const id=document.querySelector('.screen.active')?.id;
+    if(id==='s2')advance(2);if(id==='s4')advance(4);if(id==='s5')sealEntry();
   }
-  const ov = document.getElementById('seal-ov');
-  ov.classList.add('on');
-  setTimeout(() => {
-    ov.classList.remove('on');
-    refreshHome();
-    show('sh');
-  }, 1400);
-}
+},{passive:true});
 
-// ══════════════════════════════════════════════════════════════════
-// SWIPE RIGHT TO ADVANCE
-// ══════════════════════════════════════════════════════════════════
-let tx = 0, ty = 0;
-document.addEventListener('touchstart', e => { tx = e.touches[0].clientX; ty = e.touches[0].clientY; }, { passive: true });
-document.addEventListener('touchend', e => {
-  const dx = e.changedTouches[0].clientX - tx;
-  const dy = e.changedTouches[0].clientY - ty;
-  if (dx > 60 && Math.abs(dy) < 50) {
-    const id = document.querySelector('.screen.active')?.id;
-    if (id === 's1') advance(1);
-    if (id === 's2') advance(2);
-    if (id === 's3') advance(3);
-    if (id === 's4') advance(4);
-    if (id === 's5') sealEntry();
-  }
-}, { passive: true });
-
-// ══════════════════════════════════════════════════════════════════
-// INIT
-// ══════════════════════════════════════════════════════════════════
 refreshHome();
 </script>
 </body>
