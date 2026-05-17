@@ -257,8 +257,43 @@
     .workout-wrap.open { max-height: 70px; }
 
     /* ══════════════════════════════════
-       SCREEN 2 — DISCARD
+       SCREEN 2 — THE BLOCK
     ══════════════════════════════════ */
+
+    /* Chakra block chips */
+    .block-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 28px;
+    }
+    .block-chip {
+      background: transparent;
+      border: 1px solid var(--muted);
+      color: var(--muted-text);
+      font-family: var(--font);
+      font-size: 0.72rem;
+      padding: 7px 13px;
+      cursor: pointer;
+      transition: all var(--tr);
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+    }
+    .block-chip:active { background: var(--green-dim); }
+    .block-chip.on {
+      border-color: var(--green);
+      color: var(--green);
+      background: var(--green-dim);
+    }
+    .block-chakra {
+      font-size: 0.58rem;
+      color: var(--muted-text);
+      display: block;
+      margin-top: 2px;
+      letter-spacing: 0.06em;
+    }
+    .block-chip.on .block-chakra { color: rgba(0,255,65,0.5); }
+
     .discard-wrap { position: relative; margin-bottom: 36px; }
     #disc-anim {
       position: absolute;
@@ -278,36 +313,39 @@
     #food-sec.on { opacity: 1; pointer-events: all; }
 
     /* ══════════════════════════════════
-       SCREEN 3 — MASK
+       SCREEN 3 — THE CHARACTER
     ══════════════════════════════════ */
-    .mask-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 8px; }
-    .mask-card {
+    .char-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 8px; }
+    .char-card {
       border: 1px solid var(--muted);
-      padding: 16px 13px;
+      padding: 14px 12px;
       cursor: pointer;
       transition: all var(--tr);
       background: transparent;
       text-align: left;
     }
-    .mask-card:active { background: var(--green-dim); }
-    .mask-card.on { border-color: var(--green); background: var(--green-dim); box-shadow: inset 0 0 0 1px var(--green); }
-    .mask-name { font-size: 0.9rem; font-weight: bold; color: #fff; margin-bottom: 5px; }
-    .mask-sub { font-size: 0.67rem; color: var(--muted-text); line-height: 1.45; }
+    .char-card:active { background: var(--green-dim); }
+    .char-card.on { border-color: var(--green); background: var(--green-dim); box-shadow: inset 0 0 0 1px var(--green); }
+    .char-name { font-size: 0.88rem; font-weight: bold; color: #fff; margin-bottom: 4px; }
+    .char-obj  { font-size: 0.58rem; color: var(--green); opacity: 0.6; margin-bottom: 4px; letter-spacing: 0.04em; text-transform: uppercase; }
+    .char-sub  { font-size: 0.65rem; color: var(--muted-text); line-height: 1.4; }
 
     /* ══════════════════════════════════
-       SCREEN 4 — WAR ROOM
+       SCREEN 4 — THE OBJECTIVE
     ══════════════════════════════════ */
-    .law-box {
+    .obj-box {
       border-left: 2px solid var(--green);
-      padding: 10px 14px;
+      padding: 12px 14px;
       margin-bottom: 28px;
       cursor: pointer;
       user-select: none;
       transition: border-color var(--tr);
     }
-    .law-box:active { border-color: #fff; }
-    .law-text { font-size: 0.88rem; color: var(--text); line-height: 1.5; }
-    .law-hint { font-size: 0.6rem; color: var(--muted-text); margin-top: 5px; letter-spacing: 0.08em; }
+    .obj-box:active { border-color: #fff; }
+    .obj-num   { font-size: 0.58rem; color: var(--green); opacity: 0.7; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 4px; }
+    .obj-name  { font-size: 1rem; font-weight: bold; color: #fff; line-height: 1.3; margin-bottom: 4px; }
+    .obj-chars { font-size: 0.65rem; color: var(--muted-text); }
+    .obj-hint  { font-size: 0.6rem; color: var(--muted-text); margin-top: 8px; letter-spacing: 0.08em; }
     .fg { margin-bottom: 26px; }
     .two-inp { display: flex; flex-direction: column; gap: 12px; }
 
@@ -445,12 +483,25 @@
 </div>
 
 <!-- ══════════════════════════════════════════════════════════
-     S2 — THE DISCARD
+     S2 — THE BLOCK
 ══════════════════════════════════════════════════════════ -->
 <div id="s2" class="screen">
   <div class="si">
-    <div class="s-label">02 / Discard</div>
-    <div class="s-prompt">What are you NOT carrying today?</div>
+    <div class="s-label">02 / The Block</div>
+    <div class="s-prompt">What's firing underneath?</div>
+
+    <!-- Chakra block selector -->
+    <div class="block-chips" id="block-chips">
+      <div class="block-chip" id="bc-fear"        onclick="pickBlock('Fear')">Fear<span class="block-chakra">Root</span></div>
+      <div class="block-chip" id="bc-guilt"       onclick="pickBlock('Guilt')">Guilt<span class="block-chakra">Sacral</span></div>
+      <div class="block-chip" id="bc-shame"       onclick="pickBlock('Shame')">Shame<span class="block-chakra">Solar Plexus</span></div>
+      <div class="block-chip" id="bc-grief"       onclick="pickBlock('Grief')">Grief<span class="block-chakra">Heart</span></div>
+      <div class="block-chip" id="bc-deception"   onclick="pickBlock('Self-deception')">Self-deception<span class="block-chakra">Throat</span></div>
+      <div class="block-chip" id="bc-separation"  onclick="pickBlock('Separation')">Separation<span class="block-chakra">Third Eye</span></div>
+      <div class="block-chip" id="bc-attachment"  onclick="pickBlock('Attachment')">Attachment<span class="block-chakra">Crown</span></div>
+    </div>
+
+    <div class="ml">What are you NOT carrying today?</div>
     <div class="discard-wrap">
       <input type="text" id="disc-inp" placeholder="A worry, a loop, a voice..." />
       <div id="disc-anim"></div>
@@ -464,28 +515,52 @@
 </div>
 
 <!-- ══════════════════════════════════════════════════════════
-     S3 — THE MASK
+     S3 — THE CHARACTER
 ══════════════════════════════════════════════════════════ -->
 <div id="s3" class="screen">
   <div class="si">
-    <div class="s-label">03 / Mask</div>
+    <div class="s-label">03 / The Character</div>
     <div class="s-prompt">Who are you today?</div>
-    <div class="mask-grid">
-      <div class="mask-card" id="mc-ghost"   onclick="pickMask('The Ghost')">
-        <div class="mask-name">The Ghost</div>
-        <div class="mask-sub">Unreadable. Present. Silent power.</div>
+    <div class="char-grid">
+      <div class="char-card" id="cc-itachi"    onclick="pickChar('Itachi')">
+        <div class="char-obj">Obj 1 · Foundation</div>
+        <div class="char-name">Itachi</div>
+        <div class="char-sub">Stoic. Carries grief. Zero drama.</div>
       </div>
-      <div class="mask-card" id="mc-surgeon" onclick="pickMask('The Surgeon')">
-        <div class="mask-name">The Surgeon</div>
-        <div class="mask-sub">Precise. One cut. No waste.</div>
+      <div class="char-card" id="cc-gojo"      onclick="pickChar('Gojo')">
+        <div class="char-obj">Obj 2–3 · Foundation</div>
+        <div class="char-name">Gojo</div>
+        <div class="char-sub">Overwhelming presence. Effortlessly bold.</div>
       </div>
-      <div class="mask-card" id="mc-king"    onclick="pickMask('The King')">
-        <div class="mask-name">The King</div>
-        <div class="mask-sub">Unhurried. Speaks last. Asks questions.</div>
+      <div class="char-card" id="cc-shikamaru" onclick="pickChar('Shikamaru')">
+        <div class="char-obj">Obj 4 · Power Move</div>
+        <div class="char-name">Shikamaru</div>
+        <div class="char-sub">Min effort. Max effect. Enjoys the work.</div>
       </div>
-      <div class="mask-card" id="mc-scout"   onclick="pickMask('The Scout')">
-        <div class="mask-name">The Scout</div>
-        <div class="mask-sub">Watch everything. Commit to nothing.</div>
+      <div class="char-card" id="cc-frank"     onclick="pickChar('Frank')">
+        <div class="char-obj">Obj 5 · Power Move</div>
+        <div class="char-name">Frank</div>
+        <div class="char-sub">Narrative control. Speaks the real frame.</div>
+      </div>
+      <div class="char-card" id="cc-tyrion"    onclick="pickChar('Tyrion')">
+        <div class="char-obj">Obj 6 · Power Move</div>
+        <div class="char-name">Tyrion</div>
+        <div class="char-sub">Build alliances. Wit over force.</div>
+      </div>
+      <div class="char-card" id="cc-sherlock"  onclick="pickChar('Sherlock')">
+        <div class="char-obj">Obj 7 · Side Effect</div>
+        <div class="char-name">Sherlock</div>
+        <div class="char-sub">Pattern recognition. Sees what others miss.</div>
+      </div>
+      <div class="char-card" id="cc-tony"      onclick="pickChar('Tony')">
+        <div class="char-obj">Obj 9 · Style Layer</div>
+        <div class="char-name">Tony</div>
+        <div class="char-sub">Systems builder. Creates the future.</div>
+      </div>
+      <div class="char-card" id="cc-jinwoo"    onclick="pickChar('Jinwoo')">
+        <div class="char-obj">Obj 10 · Infinite Engine</div>
+        <div class="char-name">Jinwoo</div>
+        <div class="char-sub">Daily progression. Trust the grind.</div>
       </div>
     </div>
   </div>
@@ -493,16 +568,21 @@
 </div>
 
 <!-- ══════════════════════════════════════════════════════════
-     S4 — THE WAR ROOM
+     S4 — THE OBJECTIVE
 ══════════════════════════════════════════════════════════ -->
 <div id="s4" class="screen">
   <div class="si">
-    <div class="s-label">04 / War Room</div>
+    <div class="s-label">04 / The Objective</div>
     <div class="s-prompt">The War Room</div>
-    <div class="law-box" onclick="cycleLaw()">
-      <div class="law-text" id="law-txt">—</div>
-      <div class="law-hint">tap to cycle</div>
+
+    <!-- Today's cascade objective — tap to cycle -->
+    <div class="obj-box" onclick="cycleObj()">
+      <div class="obj-num" id="obj-num">Objective 1 · Foundation</div>
+      <div class="obj-name" id="obj-name">No stress</div>
+      <div class="obj-chars" id="obj-chars">Itachi</div>
+      <div class="obj-hint">tap to cycle cascade</div>
     </div>
+
     <div class="fg">
       <div class="ml">The Cold Read — one person, what do they want that they're not saying?</div>
       <div class="two-inp">
@@ -564,8 +644,12 @@
       <div class="w-stat">Current: <span id="w-streak">0</span> days</div>
     </div>
     <div class="w-sec">
-      <div class="w-sec-title">Most Picked Mask</div>
-      <div class="w-stat" id="w-mask">—</div>
+      <div class="w-sec-title">Most Channelled Character</div>
+      <div class="w-stat" id="w-char">—</div>
+    </div>
+    <div class="w-sec">
+      <div class="w-sec-title">Most Surfaced Block</div>
+      <div class="w-stat" id="w-block">—</div>
     </div>
     <div class="w-sec">
       <div class="w-sec-title">Recent Discards</div>
@@ -633,16 +717,33 @@
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwNdiF57hIEiToT6kirL5hkmArsunQQKK9XLb9mGZbuFcJHfta0EXaOlETbO-js2M0S/exec';
 const SECRET_KEY = 'anurag2024night';
 
-const LAWS = [
-  'Law 6 — Court attention at all cost',
-  'Law 24 — Play the perfect courtier',
-  'Law 30 — Make your accomplishments seem effortless',
-  'Law 35 — Master the art of timing',
-  'Strategy 1 — Declare war on your enemies (Grand Strategy)',
-  'Strategy 2 — Do not fight the last war',
-  'Law 4 — Always say less than necessary',
-  'Law 3 — Conceal your intentions',
+// ── 11 Objectives (cascade order) ──────────────────────────────────
+const OBJECTIVES = [
+  { n:1,  name:'No stress',                    chars:'Itachi',            cat:'Foundation'      },
+  { n:2,  name:'Be cool',                      chars:'Gojo',              cat:'Foundation'      },
+  { n:3,  name:'Be bold — take more risks',    chars:'Gojo + Tony',       cat:'Foundation'      },
+  { n:4,  name:'Work less, be more effective', chars:'Shikamaru',         cat:'Power Move'      },
+  { n:5,  name:'My voice matters most',        chars:'Frank',             cat:'Power Move'      },
+  { n:6,  name:'Build alliances',              chars:'Tyrion',            cat:'Power Move'      },
+  { n:7,  name:'People respect me',            chars:'Sherlock',          cat:'Side Effect'     },
+  { n:8,  name:'Enjoy the work',               chars:'Shikamaru',         cat:'Side Effect'     },
+  { n:9,  name:'Be like my characters',        chars:'All eight',         cat:'Style Layer'     },
+  { n:10, name:'Keep developing',              chars:'Jinwoo',            cat:'Infinite Engine' },
+  { n:11, name:'Open all 7 chakras',           chars:'All eight + body',  cat:'Meta-Objective'  },
 ];
+
+// ── 8 Characters ────────────────────────────────────────────────────
+const CHAR_IDS = {
+  'Itachi':'cc-itachi', 'Gojo':'cc-gojo', 'Shikamaru':'cc-shikamaru',
+  'Frank':'cc-frank',   'Tyrion':'cc-tyrion', 'Sherlock':'cc-sherlock',
+  'Tony':'cc-tony',     'Jinwoo':'cc-jinwoo',
+};
+
+// ── 7 Chakra blocks ─────────────────────────────────────────────────
+const BLOCK_IDS = {
+  'Fear':'bc-fear', 'Guilt':'bc-guilt', 'Shame':'bc-shame', 'Grief':'bc-grief',
+  'Self-deception':'bc-deception', 'Separation':'bc-separation', 'Attachment':'bc-attachment',
+};
 
 // Screen ID → progress-screens index (1-indexed, 5 steps)
 const PROG_SCREENS = ['s1','s2','s3','s4','s5'];
@@ -650,9 +751,10 @@ const PROG_SCREENS = ['s1','s2','s3','s4','s5'];
 // ══════════════════════════════════════════════════════════════════
 // STATE
 // ══════════════════════════════════════════════════════════════════
-let mask       = null;
+let character  = null;
+let block      = null;
+let objIdx     = 0;
 let workout    = 'skip';
-let lawIdx     = 0;
 let discardVal = '';
 let evState    = {};
 let gapTmr     = null;
@@ -734,7 +836,7 @@ function refreshHome() {
 // ══════════════════════════════════════════════════════════════════
 function beginEntry() {
   vib(40);
-  mask = null; workout = 'skip'; discardVal = '';
+  character = null; block = null; workout = 'skip'; discardVal = '';
 
   document.getElementById('wo-yes').classList.remove('on');
   document.getElementById('wo-skip').classList.add('on');
@@ -748,7 +850,8 @@ function beginEntry() {
   document.getElementById('food-sec').classList.remove('on');
   document.getElementById('food-inp').value = '';
 
-  document.querySelectorAll('.mask-card').forEach(c => c.classList.remove('on'));
+  document.querySelectorAll('.block-chip').forEach(c => c.classList.remove('on'));
+  document.querySelectorAll('.char-card').forEach(c => c.classList.remove('on'));
 
   document.getElementById('cr-person').value = '';
   document.getElementById('cr-hyp').value = '';
@@ -756,9 +859,9 @@ function beginEntry() {
   document.getElementById('kai-inp').value = '';
   document.getElementById('stk-inp').value = '';
 
-  // Daily law
-  lawIdx = dayNum() % LAWS.length;
-  document.getElementById('law-txt').textContent = LAWS[lawIdx];
+  // Default objective = 1, user can cycle
+  objIdx = 0;
+  renderObj();
 
   startGap();
 }
@@ -833,26 +936,38 @@ function runDiscardAnim(val, cb) {
 }
 
 // ══════════════════════════════════════════════════════════════════
-// SCREEN 3 — MASK
+// SCREEN 2 — BLOCK PICKER
 // ══════════════════════════════════════════════════════════════════
-const MASK_IDS = {
-  'The Ghost': 'mc-ghost', 'The Surgeon': 'mc-surgeon',
-  'The King': 'mc-king',   'The Scout': 'mc-scout',
-};
+function pickBlock(name) {
+  block = name;
+  document.querySelectorAll('.block-chip').forEach(c => c.classList.remove('on'));
+  document.getElementById(BLOCK_IDS[name]).classList.add('on');
+  vib(20);
+}
 
-function pickMask(name) {
-  mask = name;
-  document.querySelectorAll('.mask-card').forEach(c => c.classList.remove('on'));
-  document.getElementById(MASK_IDS[name]).classList.add('on');
+// ══════════════════════════════════════════════════════════════════
+// SCREEN 3 — CHARACTER PICKER
+// ══════════════════════════════════════════════════════════════════
+function pickChar(name) {
+  character = name;
+  document.querySelectorAll('.char-card').forEach(c => c.classList.remove('on'));
+  document.getElementById(CHAR_IDS[name]).classList.add('on');
   vib(25);
 }
 
 // ══════════════════════════════════════════════════════════════════
-// SCREEN 4 — CYCLE LAW
+// SCREEN 4 — CYCLE OBJECTIVE (cascade order)
 // ══════════════════════════════════════════════════════════════════
-function cycleLaw() {
-  lawIdx = (lawIdx + 1) % LAWS.length;
-  document.getElementById('law-txt').textContent = LAWS[lawIdx];
+function renderObj() {
+  const o = OBJECTIVES[objIdx];
+  document.getElementById('obj-num').textContent  = `Objective ${o.n} · ${o.cat}`;
+  document.getElementById('obj-name').textContent = o.name;
+  document.getElementById('obj-chars').textContent = o.chars;
+}
+
+function cycleObj() {
+  objIdx = (objIdx + 1) % OBJECTIVES.length;
+  renderObj();
   vib(15);
 }
 
@@ -893,15 +1008,18 @@ function advance(from) {
 async function sealEntry() {
   vib([50, 30, 50]);
 
+  const obj = OBJECTIVES[objIdx];
   const entry = {
     date:              today(),
     bodyScore:         parseInt(document.getElementById('s-slider').value),
     workoutLocked:     workout === 'yes',
     workout:           document.getElementById('wo-inp').value.trim(),
+    block:             block || '',
     discard:           discardVal || document.getElementById('disc-inp').value.trim(),
     foodNot:           document.getElementById('food-inp').value.trim(),
-    mask:              mask || '',
-    law:               LAWS[lawIdx],
+    character:         character || '',
+    objective:         `${obj.n} — ${obj.name}`,
+    objectiveChars:    obj.chars,
     coldReadPerson:    document.getElementById('cr-person').value.trim(),
     coldReadHypothesis:document.getElementById('cr-hyp').value.trim(),
     positioningMove:   document.getElementById('pos-inp').value.trim(),
@@ -943,10 +1061,11 @@ function showReview() {
   if (!e) return;
   alert(
     `Body: ${e.bodyScore}/10\n` +
-    `Mask: ${e.mask || '—'}\n` +
+    `Block: ${e.block || '—'}\n` +
+    `Character: ${e.character || '—'}\n` +
+    `Objective: ${e.objective || '—'}\n` +
     `Discard: ${e.discard || '—'}\n` +
     `Not eating: ${e.foodNot || '—'}\n` +
-    `Law: ${e.law}\n` +
     `Cold read: ${e.coldReadPerson} — ${e.coldReadHypothesis}\n` +
     `Positioning: ${e.positioningMove || '—'}\n` +
     `1%: ${e.kaizen || '—'}\n` +
@@ -982,12 +1101,19 @@ function showWeekly() {
 
   document.getElementById('w-streak').textContent = getStreak();
 
-  // Most picked mask
-  const mc = {};
-  days.forEach(d => { const e = db[d]; if (e && e.mask) mc[e.mask] = (mc[e.mask]||0)+1; });
-  const top = Object.entries(mc).sort((a,b)=>b[1]-a[1])[0];
-  document.getElementById('w-mask').innerHTML = top
-    ? `<span>${top[0]}</span> — ${top[1]}x this week` : '—';
+  // Most channelled character
+  const cc = {};
+  days.forEach(d => { const e = db[d]; if (e && e.character) cc[e.character] = (cc[e.character]||0)+1; });
+  const topChar = Object.entries(cc).sort((a,b)=>b[1]-a[1])[0];
+  document.getElementById('w-char').innerHTML = topChar
+    ? `<span>${topChar[0]}</span> — ${topChar[1]}x this week` : '—';
+
+  // Most surfaced block
+  const bc = {};
+  days.forEach(d => { const e = db[d]; if (e && e.block) bc[e.block] = (bc[e.block]||0)+1; });
+  const topBlock = Object.entries(bc).sort((a,b)=>b[1]-a[1])[0];
+  document.getElementById('w-block').innerHTML = topBlock
+    ? `<span>${topBlock[0]}</span> — ${topBlock[1]}x this week` : '—';
 
   // Discards
   const dEl = document.getElementById('w-discards');
