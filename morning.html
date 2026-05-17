@@ -96,6 +96,7 @@ input[type=text]::placeholder{color:var(--mt)}
 .seal-q{font-size:.75rem;color:var(--mt);max-width:260px;line-height:1.7;margin-bottom:20px}
 .seal-go{font-size:1.2rem;color:#fff;opacity:0;transition:opacity 1.5s ease;letter-spacing:.12em}
 .seal-go.on{opacity:1}
+.mantra-line{font-size:1.3rem;font-family:var(--f);color:var(--g);font-weight:700;line-height:1.4;letter-spacing:.04em;border-left:2px solid var(--g);padding-left:16px}
 
 /* WEEKLY */
 #sw .si{justify-content:flex-start;padding-top:52px}
@@ -341,12 +342,21 @@ input[type=text]::placeholder{color:var(--mt)}
 </div>
 
 <!-- S6 SEAL -->
-<div id="s6" class="screen" onclick="exitToHome()">
+<div id="s6" class="screen" onclick="show('s7')">
   <div class="si">
     <div class="seal-day" id="seal-day">Day 1</div>
     <div class="seal-char" id="seal-char"></div>
     <div class="seal-q">The feeling is just lagging behind. It will pass.</div>
     <div class="seal-go" id="seal-go">Go walk.</div>
+  </div>
+</div>
+
+<!-- S7 CLOSING MANTRAS -->
+<div id="s7" class="screen" onclick="exitToHome()">
+  <div class="si" style="display:flex;flex-direction:column;gap:32px;justify-content:center;height:100%">
+    <div class="mantra-line">Be aware of fear — but not afraid.</div>
+    <div class="mantra-line">Every challenge is an opportunity.</div>
+    <div class="mantra-line">Everything just is.<br><span style="font-size:.8rem;color:var(--mt);letter-spacing:.1em">Just as Gyaan.</span></div>
   </div>
 </div>
 
