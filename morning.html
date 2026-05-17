@@ -442,7 +442,7 @@ const BLOCK_IDS={Fear:'bc-fear',Guilt:'bc-guilt',Shame:'bc-shame',Grief:'bc-grie
 const QS_DIMS=['presence','energy','fear','shen'];
 
 // state
-let character=null,block=null,lens=null,lensKey=null,workout='skip',discardVal='',evState={},gapTmr=null;
+let character=null,block=[],lens=null,lensKey=null,workout='skip',discardVal='',evState={},gapTmr=null;
 let qsScores={presence:0,energy:0,fear:0,shen:0};
 let qsDone=0;
 
@@ -517,7 +517,7 @@ function scoreQS(dim,score){
 
 function beginEntry(){
   vib(40);
-  character=null;block=null;lens=null;lensKey=null;discardVal='';workout='skip';
+  character=null;block=[];lens=null;lensKey=null;discardVal='';workout='skip';
   qsScores={presence:0,energy:0,fear:0,shen:0};qsDone=0;
   buildQS();
   QS_DIMS.forEach(d=>{document.getElementById('qr-'+d).classList.remove('done')});
@@ -546,9 +546,9 @@ function startGap(){
 }
 
 function pickBlock(name){
-  block=name;
-  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
-  document.getElementById(BLOCK_IDS[name]).classList.add('on');
+  const idx=block.indexOf(name);
+  if(idx===-1){block.push(name);document.getElementById(BLOCK_IDS[name]).classList.add('on');}
+  else{block.splice(idx,1);document.getElementById(BLOCK_IDS[name]).classList.remove('on');}
   vib(20);
 }
 
@@ -593,7 +593,7 @@ async function sealEntry(){
   const entry={
     date:today(),
     presence:qsScores.presence,energy:qsScores.energy,fear:qsScores.fear,shen:qsScores.shen,
-    block:block||'',discard:discardVal||document.getElementById('disc-inp').value.trim(),
+    block:block.join(', ')||'',discard:discardVal||document.getElementById('disc-inp').value.trim(),
     foodNot:document.getElementById('food-inp').value.trim(),
     character:character||'',lens:lens||'',lensKey:lensKey||'',
     positioningMove:'',coldReadPerson:'',coldReadHypothesis:'',
